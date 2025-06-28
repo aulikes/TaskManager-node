@@ -20,23 +20,30 @@ export class CreateTaskService {
    * El ID de la tarea es generado por la base de datos durante la persistencia.
    */
   async execute(command: CreateTaskCommand): Promise<Task> {
-    // Crear entidad de dominio sin ID
-    const task = Task.create(command.title, command.description);
+    try {
+      console.log('Creando entidad de dominio...');
+      const task = Task.create(command.title, command.description);
 
-    // Persistir y obtener entidad con ID generado por la base de datos
-    const saved = await this.repository.save(task);
+      console.log('Persistiendo en base de datos...');
+      const saved = await this.repository.save(task);
 
-    // Publicar evento ahora que el ID ya existe
-    await this.eventPublisher.publish(
-      new TaskCreatedEvent(
-        saved.id!,  // <- el ! asegura que no es undefined
-        saved.title,
-        saved.description,
-        saved.status,
-        saved.createdAt,
-      )
-    );
+      console.log('Publicando evento...');
+      await this.eventPublisher.publish(
+        new TaskCreatedEvent(
+          saved.id!,
+          saved.title,
+          saved.description,
+          saved.status,
+          saved.createdAt
+        )
+      );
 
-    return saved;
+      console.log('Tarea creada exitosamente.');
+      return saved;
+
+    } catch (error) {
+      console.error('Error al ejecutar el caso de uso CreateTask:', error);
+      throw error;
+    }
   }
 }

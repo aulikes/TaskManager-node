@@ -19,4 +19,3 @@ export class TaskController {
     return await this.createTaskUseCase.execute(command);
   }
 }
-
