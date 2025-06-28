@@ -2,7 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
-import { TaskModule } from './infrastructure/web/module/task.module';≈
+import { TaskModule } from './infrastructure/web/module/task.module';
+import { HealthModule } from './infrastructure/web/module/health.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { TaskModule } from './infrastructure/web/module/task.module';≈
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     TaskModule,
+    HealthModule
   ],
 })
 export class AppModule {}

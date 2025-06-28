@@ -18,7 +18,7 @@ services:
   # Servicio Kafka (broker de eventos)
   # ---------------------------------------------------
   kafka:
-    image: confluentinc/cp-kafka:latest            # Imagen oficial de Apache Kafka
+    image: confluentinc/cp-kafka:7.4.0             # Imagen oficial de Apache Kafka
     container_name: kafka                          # Nombre del contenedor
     depends_on:
       - zookeeper                                  # Espera a que Zookeeper esté listo

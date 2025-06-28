@@ -1,10 +1,13 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TaskStatusOrm } from './task-status.orm';
 
-@Entity({ name: 'tasks' })
+/**
+ * Representación ORM de la entidad Task con ID secuencial autogenerado.
+ */
+@Entity({ name: 'task' })
 export class TaskOrmEntity {
-  @PrimaryColumn()
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   title: string;

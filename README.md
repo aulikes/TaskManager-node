@@ -20,20 +20,20 @@ Este proyecto es una API REST desarrollada con [NestJS](https://nestjs.com/) y T
 
 | Método | Endpoint                       | Descripción                        |
 |--------|--------------------------------|------------------------------------|
-| GET    | `/tareas`                      | Listar todas las tareas            |
-| POST   | `/tareas`                      | Crear una nueva tarea              |
-| PATCH  | `/tareas/:id/completar`        | Marcar tarea como completada       |
-| DELETE | `/tareas/:id`                  | Eliminar una tarea                 |
+| GET    | `/tasks`                      | Listar todas las tareas            |
+| POST   | `/tasks`                      | Crear una nueva tarea              |
+| PATCH  | `/tasks/:id/completar`        | Marcar tarea como completada       |
+| DELETE | `/tasks/:id`                  | Eliminar una tarea                 |
 
 ### Modelo de datos
 
 ```ts
 {
   id: number;
-  titulo: string;
-  descripcion?: string;
-  completado: boolean;
-  fechaCreacion: Date;
+  title: string;
+  description?: string;
+  status: 'PENDING' | 'COMPLETED': boolean;
+  createdAt: Date;
 }
 ```
 
@@ -47,7 +47,7 @@ Este proyecto es una API REST desarrollada con [NestJS](https://nestjs.com/) y T
 | **TypeScript**      | Lenguaje fuertemente tipado                    |
 | **class-validator** | Validación declarativa de DTOs                 |
 | **Swagger**         | Documentación automática de la API             |
-| **SQLite (opcional)** | Persistencia liviana para desarrollo local     |
+| **PostgreSQL** | Persistencia liviana para desarrollo local     |
 | **Jest**            | Framework de testing (incluido por defecto)    |
 
 ---
@@ -94,7 +94,7 @@ src/
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/tareas-api.git
+git clone https://github.com/tu-usuario/tasks-api.git
 cd tareas-api
 
 # Instalar dependencias
@@ -104,7 +104,7 @@ npm install
 npm run start:dev
 ```
 
-Accede a la API en: [http://localhost:3000/tareas](http://localhost:3000/tareas)  
+Accede a la API en: [http://localhost:3000/tasks](http://localhost:3000/tasks)  
 Swagger docs: [http://localhost:3000/api](http://localhost:3000/api)
 
 ---
@@ -114,4 +114,62 @@ Swagger docs: [http://localhost:3000/api](http://localhost:3000/api)
 - Aplicación de Clean Architecture en Node.js con NestJS
 - Modularización por dominio y casos de uso
 - Inyección de dependencias y principios SOLID
-- Desarrollo profesional y mantenible en Node.js/TypeScript
+- Desarrollo profesional y mantenible en Node.js/TypeScript---
+
+## 📤 Eventos y RabbitMQ
+
+Cada vez que se crea una nueva tarea, se publica un evento `task.created` en el exchange `task.events`.  
+Esto permite la integración asíncrona con otros servicios o microservicios interesados en estos eventos.
+
+---
+
+## 🩺 Health Check resiliente
+
+Se expone la ruta `/health` para verificar el estado de:
+
+- Conectividad a PostgreSQL
+- Disponibilidad de Redis
+- Acceso a RabbitMQ
+
+Todos los checks usan retry configurable desde `.env`.
+
+---
+
+## ⚙️ Variables de entorno
+
+```env
+# PostgreSQL
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=task_manager_db
+
+# RabbitMQ
+RABBITMQ_HOST=localhost
+RABBITMQ_PORT=5672
+RABBITMQ_USER=admin
+RABBITMQ_PASSWORD=admin
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Retry para health check
+MAX_RETRIES=3
+RETRY_DELAY_MS=500
+```
+
+---
+
+## 🧪 Pruebas E2E
+
+El proyecto incluye pruebas end-to-end para verificar los endpoints expuestos.
+
+Ejecutar con:
+
+```bash
+npm run test:e2e
+```
+
+---

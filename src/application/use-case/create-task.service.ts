@@ -1,24 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { TaskRepository } from '../../domain/repository/task.repository';
+import { Inject, Injectable } from '@nestjs/common';
 import { Task } from '../../domain/entity/task.entity';
-import { TaskStatus } from '../../domain/enum/task-status.enum';
+import { TaskCreatedEvent } from '../../domain/event/task-created.event';
 import { CreateTaskCommand } from '../command/create-task.command';
-import { CreateTaskUseCase } from '../port/in/create-task.use-case';
-import { v4 as uuidv4 } from 'uuid';
+import { TaskRepository, TaskRepositoryToken } from '../../domain/repository/task.repository';
+import { TaskCreatedEventPublisher, TaskCreatedEventPublisherToken } from '../port/out/task-created-event.publisher';
 
 @Injectable()
-export class CreateTaskService implements CreateTaskUseCase {
-  constructor(private readonly taskRepository: TaskRepository) {}
+export class CreateTaskService {
+  constructor(
+    @Inject(TaskRepositoryToken)
+    private readonly repository: TaskRepository,
 
+    @Inject(TaskCreatedEventPublisherToken)
+    private readonly eventPublisher: TaskCreatedEventPublisher,
+  ) {}
+
+  /**
+   * Ejecuta la creación de una tarea a partir del comando de entrada.
+   * El ID de la tarea es generado por la base de datos durante la persistencia.
+   */
   async execute(command: CreateTaskCommand): Promise<Task> {
-    const task = new Task(
-      uuidv4(),
-      command.title,
-      command.description ?? null,
-      TaskStatus.PENDING,
-      new Date()
+    // Crear entidad de dominio sin ID
+    const task = Task.create(command.title, command.description);
+
+    // Persistir y obtener entidad con ID generado por la base de datos
+    const saved = await this.repository.save(task);
+
+    // Publicar evento ahora que el ID ya existe
+    await this.eventPublisher.publish(
+      new TaskCreatedEvent(
+        saved.id!,  // <- el ! asegura que no es undefined
+        saved.title,
+        saved.description,
+        saved.status,
+        saved.createdAt,
+      )
     );
-    await this.taskRepository.save(task);
-    return task;
+
+    return saved;
   }
 }
