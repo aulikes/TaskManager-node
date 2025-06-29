@@ -22,3 +22,6 @@ bin/
 .vscode/
 **/node_modules
 **/dist
+task-manager-node/.DS_Store
+.DS_Store
+**/.DS_Store

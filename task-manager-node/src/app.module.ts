@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { TaskModule } from './infrastructure/web/module/task.module';
 import { HealthModule } from './infrastructure/web/module/health.module';
+import { AppLogger } from './logger/app.logger';
 
 @Module({
   imports: [
@@ -15,5 +16,7 @@ import { HealthModule } from './infrastructure/web/module/health.module';
     TaskModule,
     HealthModule
   ],
+  providers: [AppLogger],
+  exports: [AppLogger],
 })
 export class AppModule {}
