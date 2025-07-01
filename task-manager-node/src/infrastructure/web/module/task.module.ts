@@ -11,11 +11,10 @@ import { TaskOrmEntity } from '../../../infrastructure/persistence/model/task.or
 import { AppLogger } from '../../../logger/app.logger';
 import { RabbitMQModule } from '../../messaging/rabbitmq/rabbitmq.module';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskOrmEntity]),
-    RabbitMQModule,
+    RabbitMQModule, 
   ],
   controllers: [TaskController],
   providers: [
