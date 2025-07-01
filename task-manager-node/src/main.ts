@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { AppLogger } from './logger/app.logger';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { getRabbitMqConfig } from './config/rabbitmq.config';
+import { declareRabbitBindings } from './config/declare-bindings';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -25,5 +27,13 @@ async function bootstrap() {
   const port = config.getOrThrow<number>('PORT');
   await app.listen(port);
   logger.log(`TaskManager-node is running on port ${port}`);
+
+  // RABBITMQ CONFIGURATION
+  // Vincula colas y exchange
+  await declareRabbitBindings(config);
+  // Registrar microservicio que escucha TASK_CREATED_QUEUE
+  app.connectMicroservice(getRabbitMqConfig(config, 'TASK_CREATED_QUEUE'));
+  await app.startAllMicroservices();
+  logger.log('RabbitMQ listener started', 'Bootstrap');
 }
 bootstrap();

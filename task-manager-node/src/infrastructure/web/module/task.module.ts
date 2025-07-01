@@ -5,17 +5,21 @@ import { CreateTaskUseCaseToken } from '../../../application/port/in/create-task
 import { TaskRepositoryToken } from '../../../domain/repository/task.repository';
 import { PostgresTaskRepository } from '../../../infrastructure/persistence/repository/task.repository.impl';
 import { TaskCreatedEventPublisherToken } from '../../../application/port/out/task-created-event.publisher';
-import { RabbitTaskCreatedEventPublisher } from '../../messaging/rabbit-task-created-event.publisher';
+import { RabbitTaskCreatedEventPublisher } from '../../messaging/rabbitmq/rabbit-task-created-event.publisher';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskOrmEntity } from '../../../infrastructure/persistence/model/task.orm-entity';
+import { AppLogger } from '../../../logger/app.logger';
+import { RabbitMQModule } from '../../messaging/rabbitmq/rabbitmq.module';
 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskOrmEntity]),
+    RabbitMQModule,
   ],
   controllers: [TaskController],
   providers: [
+    AppLogger,
     {
       provide: CreateTaskUseCaseToken,
       useClass: CreateTaskService,

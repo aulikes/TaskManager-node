@@ -4,6 +4,7 @@ import { TaskCreatedEvent } from '../../domain/event/task-created.event';
 import { CreateTaskCommand } from '../command/create-task.command';
 import { TaskRepository, TaskRepositoryToken } from '../../domain/repository/task.repository';
 import { TaskCreatedEventPublisher, TaskCreatedEventPublisherToken } from '../port/out/task-created-event.publisher';
+import { AppLogger } from '../../logger/app.logger';
 
 @Injectable()
 export class CreateTaskService {
@@ -13,6 +14,8 @@ export class CreateTaskService {
 
     @Inject(TaskCreatedEventPublisherToken)
     private readonly eventPublisher: TaskCreatedEventPublisher,
+
+    private readonly logger: AppLogger,
   ) {}
 
   /**
@@ -21,13 +24,13 @@ export class CreateTaskService {
    */
   async execute(command: CreateTaskCommand): Promise<Task> {
     try {
-      console.log('Creando entidad de dominio...');
+      this.logger.log('Creando entidad de dominio...');
       const task = Task.create(command.title, command.description);
 
-      console.log('Persistiendo en base de datos...');
+      this.logger.log('Persistiendo en base de datos...');
       const saved = await this.repository.save(task);
 
-      console.log('Publicando evento...');
+      this.logger.log('Preparando para publicar evento...');
       await this.eventPublisher.publish(
         new TaskCreatedEvent(
           saved.id!,
@@ -38,11 +41,11 @@ export class CreateTaskService {
         )
       );
 
-      console.log('Tarea creada exitosamente.');
+      this.logger.log('Tarea creada exitosamente.');
       return saved;
 
     } catch (error) {
-      console.error('Error al ejecutar el caso de uso CreateTask:', error);
+      this.logger.error('Error al ejecutar el caso de uso CreateTask:', error);
       throw error;
     }
   }

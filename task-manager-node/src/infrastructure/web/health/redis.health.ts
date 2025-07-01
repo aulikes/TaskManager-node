@@ -2,16 +2,18 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { HealthIndicatorResult } from '@nestjs/terminus';
-import { retryFlexible } from '../../utils/resilience-utils';
+import { retryFlexible } from '../../util/resilience-utils';
+import { AppLogger } from '../../../logger/app.logger';
 
 /**
  * Verifica la conexión con Redis.
  */
 @Injectable()
 export class RedisHealthIndicator {
-  private readonly logger = new Logger(RedisHealthIndicator.name);
-
-  constructor(private config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly logger: AppLogger,
+  ) {}
 
   async isRedisHealthy(): Promise<HealthIndicatorResult> {
     const redis = new Redis({
