@@ -3,7 +3,6 @@ import { AppModule } from './app.module';
 import { AppLogger } from './logger/app.logger';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { declareRabbitBindings } from './config/declare-bindings';
 
 
 async function bootstrap() {
@@ -22,8 +21,6 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, openApi);
   SwaggerModule.setup('api', app, document);
-
-  await declareRabbitBindings(config);
 
   //PORT CONFIGURATION
   const port = config.getOrThrow<number>('PORT');
