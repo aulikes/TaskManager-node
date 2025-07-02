@@ -1,20 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { Task } from '../../domain/entity/task.entity';
-import { TaskCreatedEvent } from '../../domain/event/task-created.event';
-import { CreateTaskCommand } from '../command/create-task.command';
-import { TaskRepository, TaskRepositoryToken } from '../../domain/repository/task.repository';
-import { TaskCreatedEventPublisher, TaskCreatedEventPublisherToken } from '../port/out/task-created-event.publisher';
+import { Injectable } from '@nestjs/common';
+import { TaskEntity } from '../model/task.entity';
+import { TaskStatus } from '../model/task-status';
+import { TaskCreatedEvent } from '../event/task-created.event';
+import { CreateTaskDto } from '../dto/create-task.dto';
+import { PostgresTaskRepository } from '../repository/task.repository';
+import { RabbitTaskCreatedEventPublisher } from '../../messaging/rabbit-task-created-event.publisher';
 import { AppLogger } from '../../logger/app.logger';
 
 @Injectable()
 export class CreateTaskService {
   constructor(
-    @Inject(TaskRepositoryToken)
-    private readonly repository: TaskRepository,
-
-    @Inject(TaskCreatedEventPublisherToken)
-    private readonly eventPublisher: TaskCreatedEventPublisher,
-
+    private readonly repository: PostgresTaskRepository,
+    private readonly eventPublisher: RabbitTaskCreatedEventPublisher,
     private readonly logger: AppLogger,
   ) {}
 
@@ -22,10 +19,15 @@ export class CreateTaskService {
    * Ejecuta la creación de una tarea a partir del comando de entrada.
    * El ID de la tarea es generado por la base de datos durante la persistencia.
    */
-  async execute(command: CreateTaskCommand): Promise<Task> {
+  async execute(dto: CreateTaskDto): Promise<TaskEntity> {
     try {
       this.logger.log('Creando entidad de dominio...');
-      const task = Task.create(command.title, command.description);
+
+      const task = new TaskEntity();
+      task.title = dto.title;
+      task.description = dto.description;
+      task.status = TaskStatus.PENDING;
+      task.createdAt = new Date();
 
       this.logger.log('Persistiendo en base de datos...');
       const saved = await this.repository.save(task);

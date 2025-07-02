@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
-import { TaskModule } from './infrastructure/web/module/task.module';
-import { HealthModule } from './infrastructure/web/module/health.module';
+import { TaskModule } from './task/task.module';
+import { HealthModule } from './health/health.module';
 import { AppLogger } from './logger/app.logger';
 
 @Module({

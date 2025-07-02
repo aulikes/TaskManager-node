@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { HealthIndicatorResult } from '@nestjs/terminus';
-import { retryFlexible } from '../../util/resilience-utils';
-import { AppLogger } from '../../../logger/app.logger';
+import { retryFlexible } from '../util/resilience-utils';
+import { AppLogger } from '../logger/app.logger';
 
 /**
  * Verifica la conexión con Redis.

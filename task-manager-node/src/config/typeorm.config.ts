@@ -1,6 +1,6 @@
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TaskOrmEntity } from '../infrastructure/persistence/model/task.orm-entity';
+import { TaskEntity } from '../task/model/task.entity';
 
 export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
@@ -16,7 +16,7 @@ export const typeOrmConfig: TypeOrmModuleAsyncOptions = {
       username: config.getOrThrow('POSTGRES_USER'),
       password: config.getOrThrow('POSTGRES_PASSWORD'),
       database: config.getOrThrow('POSTGRES_DB'),
-      entities: [TaskOrmEntity],
+      entities: [TaskEntity],
       synchronize: true, // Habilitar solo en desarrollo
     };
   },

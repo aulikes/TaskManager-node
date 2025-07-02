@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TaskCreatedEventPublisher } from '../../../application/port/out/task-created-event.publisher';
-import { TaskCreatedEvent } from '../../../domain/event/task-created.event';
-import { AppLogger } from '../../../logger/app.logger';
+import { TaskCreatedEvent } from '../task/event/task-created.event';
+import { AppLogger } from '../logger/app.logger';
 import { RabbitMQPublisherService } from './rabbitmq-publisher.service';
 
 @Injectable()
-export class RabbitTaskCreatedEventPublisher implements TaskCreatedEventPublisher {
+export class RabbitTaskCreatedEventPublisher {
   constructor(
     private readonly publisher: RabbitMQPublisherService,
     private readonly config: ConfigService,

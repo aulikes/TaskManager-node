@@ -1,11 +1,11 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TaskStatusOrm } from './task-status.orm';
+import { TaskStatus } from './task-status';
 
 /**
  * Representación ORM de la entidad Task con ID secuencial autogenerado.
  */
 @Entity({ name: 'task' })
-export class TaskOrmEntity {
+export class TaskEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -15,8 +15,8 @@ export class TaskOrmEntity {
   @Column({ nullable: true })
   description: string;
 
-  @Column({ type: 'enum', enum: TaskStatusOrm })
-  status: TaskStatusOrm;
+  @Column({ type: 'enum', enum: TaskStatus })
+  status: TaskStatus;
 
   @Column({ type: 'timestamp' })
   createdAt: Date;

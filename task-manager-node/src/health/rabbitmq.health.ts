@@ -2,9 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as amqplib from 'amqplib';
 import { HealthIndicatorResult } from '@nestjs/terminus';
-import { retryFlexible } from '../../util/resilience-utils';
-import { getRabbitMqUri } from '../../util/get-rabbitmq-uri';
-import { AppLogger } from '../../../logger/app.logger';
+import { retryFlexible } from '../util/resilience-utils';
+import { getRabbitMqUri } from '../util/get-rabbitmq-uri';
+import { AppLogger } from '../logger/app.logger';
 
 /**
  * Verifica la conexión con RabbitMQ sin extender clases de Terminus.

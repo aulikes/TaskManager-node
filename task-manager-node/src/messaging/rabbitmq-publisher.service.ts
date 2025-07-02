@@ -1,8 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AppLogger } from '../../../logger/app.logger';
+import { AppLogger } from '../logger/app.logger';
 import { connect, ConfirmChannel, Connection } from 'amqplib';
-import { getRabbitMqUri } from '../../util/get-rabbitmq-uri';
+import { getRabbitMqUri } from '../util/get-rabbitmq-uri';
 
 @Injectable()
 export class RabbitMQPublisherService implements OnModuleInit {
