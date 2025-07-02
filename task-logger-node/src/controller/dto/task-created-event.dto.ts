@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsEnum, IsDateString } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsDateString, IsNumber } from 'class-validator';
 
 export enum TaskStatus {
   PENDING = 'PENDING',
@@ -8,9 +8,9 @@ export enum TaskStatus {
 }
 
 export class TaskCreatedEventDto {
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  id: string;
+  id: number;
 
   @IsString()
   @IsNotEmpty()

@@ -31,13 +31,13 @@ export class TaskCreatedListener implements OnModuleInit {
     channel.consume(queue, async (msg) => {
       if (!msg) return;
 
-      let idEvent = "";
+      let idEvent = 0;
       try {
         const data = msg.content.toString();
         const payload = JSON.parse(data);
 
         this.logger.log('Received event: task.created');
-        this.logger.debug('Raw payload: ' + JSON.stringify(data));
+        this.logger.log('Raw payload: ' + JSON.stringify(data));
 
         // Convertir el objeto plano recibido a una instancia del DTO
         const dto = plainToInstance(TaskCreatedEventDto, payload);
@@ -45,7 +45,6 @@ export class TaskCreatedListener implements OnModuleInit {
         const errors = await validate(dto);
 
         if (errors.length > 0) {
-          this.logger.warn('Validation failed for TaskCreatedEvent');
           this.logger.error('Validation failed for TaskCreatedEvent', JSON.stringify(errors));
           channel.ack(msg);
           return;

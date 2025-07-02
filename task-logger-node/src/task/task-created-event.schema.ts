@@ -7,7 +7,7 @@ export type TaskCreatedEventDocument = TaskCreatedEvent & Document;
 @Schema({ collection: 'task_created_events', timestamps: true }) // activa timestamps (createdAt, updatedAt)
 export class TaskCreatedEvent {
   @Prop({ required: true, unique: true })
-  id: string;
+  id: number;
 
   @Prop({ required: true })
   title: string;

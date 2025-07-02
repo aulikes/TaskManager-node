@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { AppLogger } from './logger/app.logger';
-import { getRabbitMqConfig } from './config/rabbitmq.config';
 import { declareRabbitBindings } from './config/declare-bindings';
 import { TaskCreatedListener } from './messaging/rabbitmq/rabbit-task-created-event.listener';
 import { MicroserviceOptions } from '@nestjs/microservices';
@@ -17,12 +16,7 @@ async function bootstrap() {
   // RABBITMQ CONFIGURATION
   // Declarar exchange, colas y bindings en RabbitMQ
   await declareRabbitBindings(config);
-
-  // Conectar microservicio que escucha RabbitMQ con el listener registrado explícitamente
-  app.connectMicroservice<MicroserviceOptions>(
-    getRabbitMqConfig(config, 'TASK_CREATED_QUEUE')
-  );
-
+  // Configurar el microservicio RabbitMQ
   await app.startAllMicroservices();
   logger.log('RabbitMQ listener started', 'Bootstrap');
 
