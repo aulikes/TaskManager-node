@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TaskEntity } from '../model/task.entity';
-import { TaskStatus } from '../model/task-status';
+import { TaskStatus } from '../model/task-status.enum';
 import { TaskCreatedEvent } from '../event/task-created.event';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { PostgresTaskRepository } from '../repository/task.repository';
@@ -21,8 +21,7 @@ export class CreateTaskService {
    */
   async execute(dto: CreateTaskDto): Promise<TaskEntity> {
     try {
-      this.logger.log('Creando entidad de dominio...');
-
+      this.logger.log('Creando entidad de Task...');
       const task = new TaskEntity();
       task.title = dto.title;
       task.description = dto.description;
@@ -32,18 +31,18 @@ export class CreateTaskService {
       this.logger.log('Persistiendo en base de datos...');
       const saved = await this.repository.save(task);
 
-      this.logger.log('Preparando para publicar evento...');
+      this.logger.log('Preparando para publicar evento de la entidad...' + saved);
       await this.eventPublisher.publish(
         new TaskCreatedEvent(
           saved.id!,
-          saved.title,
+          saved.title!,
           saved.description,
           saved.status,
           saved.createdAt
         )
       );
 
-      this.logger.log('Tarea creada exitosamente.');
+      this.logger.log('Task publicada exitosamente.');
       return saved;
 
     } catch (error) {

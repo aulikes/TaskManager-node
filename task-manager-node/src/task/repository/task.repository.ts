@@ -38,7 +38,7 @@ export class PostgresTaskRepository {
   /**
    * Elimina una tarea de la base de datos por ID.
    */
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.ormRepo.delete(id);
   }
 }

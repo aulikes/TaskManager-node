@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { TaskStatus } from './task-status';
+import { TaskStatus } from './task-status.enum';
 
 /**
  * Representación ORM de la entidad Task con ID secuencial autogenerado.
