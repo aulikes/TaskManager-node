@@ -1,26 +1,26 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { AppLogger } from '../../logger/app.logger';
-import { TaskCreatedService } from '../../task/service/task-created.service';
+import { TaskUpdatedService } from '../../task/service/task-updated.service';
 import { RabbitMqListenerService } from './rabbitmq-listener.service';
 
 import { BadRequestException } from '@nestjs/common';
 
 /**
- * Listener que consume eventos de creación de tareas desde RabbitMQ.
+ * Listener que escucha eventos de actualización de tareas desde RabbitMQ.
  */
 @Injectable()
-export class TaskCreatedListener implements OnModuleInit {
+export class TaskUpdatedListener implements OnModuleInit {
   constructor(
     private readonly listenerService: RabbitMqListenerService,
-    private readonly taskCreatedService: TaskCreatedService,
+    private readonly taskUpdatedService: TaskUpdatedService,
     private readonly logger: AppLogger,
   ) {}
 
   /**
-   * Se ejecuta al inicializar el módulo y se conecta a la cola configurada.
+   * Se ejecuta al inicializar el módulo y se conecta a la cola 'TASK_UPDATED_QUEUE'
    */
   async onModuleInit() {
-    const { channel, queue } = await this.listenerService.connectToQueue('TASK_CREATED_QUEUE');
+    const { channel, queue } = await this.listenerService.connectToQueue('TASK_UPDATED_QUEUE');
 
     channel.consume(queue, async (msg) => {
       if (!msg) return;
@@ -28,11 +28,11 @@ export class TaskCreatedListener implements OnModuleInit {
         const data = msg.content.toString();
         const payload = JSON.parse(data);
 
-        this.logger.log('Received event: task.created');
+        this.logger.log('Received event: task.updated');
         this.logger.log('Raw payload: ' + JSON.stringify(data));
 
-        await this.taskCreatedService.saveEvent(payload);
-        this.logger.log('Task event saved to MongoDB', 'TaskCreatedListener');
+        await this.taskUpdatedService.saveEvent(payload);
+        this.logger.log('Task updated event saved to MongoDB', 'TaskUpdatedListener');
         channel.ack(msg);
       } catch (err) {
         if (err instanceof BadRequestException) {
