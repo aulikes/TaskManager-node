@@ -4,10 +4,10 @@ import { ConfigService } from '@nestjs/config';
  * Genera la URI de conexión a RabbitMQ a partir de variables de entorno.
  */
 export function getRabbitMqUri(config: ConfigService): string {
-  const user = config.get<string>('RABBITMQ_USER');
-  const password = config.get<string>('RABBITMQ_PASSWORD');
-  const host = config.get<string>('RABBITMQ_HOST');
-  const port = config.get<number>('RABBITMQ_PORT');
+  const user = config.getOrThrow<string>('RABBITMQ_USER');
+  const password = config.getOrThrow<string>('RABBITMQ_PASSWORD');
+  const host = config.getOrThrow<string>('RABBITMQ_HOST');
+  const port = config.getOrThrow<number>('RABBITMQ_PORT');
 
   if (!user || !password || !host || !port) {
     throw new Error('RabbitMQ configuration is invalid or incomplete');

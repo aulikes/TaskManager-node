@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 import { HealthIndicatorResult } from '@nestjs/terminus';
-import { retryFlexible } from '../util/resilience-utils';
+import { retryFlexible } from '../util/retry-flexible-util';
 import { AppLogger } from '../logger/app.logger';
 
 /**

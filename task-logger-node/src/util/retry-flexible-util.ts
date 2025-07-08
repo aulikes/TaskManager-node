@@ -6,7 +6,7 @@ const logger = new Logger('RetryUtility');
 export async function retryFlexible<T>(
   fn: () => T | Promise<T>,
   config: ConfigService,
-  label = 'operation'
+  label = 'INITIAL_OPERATION'
 ): Promise<T> {
   const maxAttempts = parseInt(config.get('MAX_RETRIES', '3'), 10);
   const delayMs = parseInt(config.get('RETRY_DELAY_MS', '500'), 10);

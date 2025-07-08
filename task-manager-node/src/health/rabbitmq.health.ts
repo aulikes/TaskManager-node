@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as amqplib from 'amqplib';
 import { HealthIndicatorResult } from '@nestjs/terminus';
-import { retryFlexible } from '../util/resilience-utils';
+import { retryFlexible } from '../util/retry-flexible-util';
 import { getRabbitMqUri } from '../util/get-rabbitmq-uri';
 import { AppLogger } from '../logger/app.logger';
 
