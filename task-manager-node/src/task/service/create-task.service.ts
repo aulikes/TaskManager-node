@@ -4,7 +4,7 @@ import { TaskStatus } from '../model/task-status.enum';
 import { TaskCreatedEvent } from '../event/task-created.event';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { PostgresTaskRepository } from '../repository/task.repository';
-import { RabbitTaskCreatedEventPublisher } from '../../messaging/rabbit-task-created-event.publisher';
+import { RabbitTaskCreatedEventPublisher } from '../../common/messaging/rabbit-task-created-event.publisher';
 import { AppLogger } from '../../logger/app.logger';
 
 @Injectable()

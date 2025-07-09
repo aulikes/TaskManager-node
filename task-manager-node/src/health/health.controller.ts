@@ -1,24 +1,27 @@
 import { Controller, Get } from '@nestjs/common';
-import { HealthCheckService, TypeOrmHealthIndicator, HealthCheck } from '@nestjs/terminus';
+// import { HealthCheckService, TypeOrmHealthIndicator, HealthCheck } from '@nestjs/terminus';
+import { HealthCheck, HealthCheckResult } from '@nestjs/terminus';
+import { HealthService } from './health.service';
 import { RabbitMQHealthIndicator } from '../health/rabbitmq.health';
 import { RedisHealthIndicator } from '../health/redis.health';
 
+/**
+ * Controlador para exponer el endpoint de verificación de salud (/health).
+ */
 @Controller('health')
 export class HealthController {
   constructor(
-    private health: HealthCheckService,
-    private db: TypeOrmHealthIndicator,
-    private redis: RedisHealthIndicator,
-    private rabbit: RabbitMQHealthIndicator
+    private readonly healthService: HealthService,
   ) {}
 
+  /**
+   * GET /health
+   * Ejecuta los indicadores de salud registrados en HealthService.
+   */
   @Get()
   @HealthCheck()
-  check() {
-    return this.health.check([
-      async () => this.db.pingCheck('postgres'),
-      async () => this.redis.isRedisHealthy(),
-      async () => this.rabbit.isRabbitHealthy(),
-    ]);
+  check(): Promise<HealthCheckResult> {
+    return this.healthService.check();
   }
 }
+

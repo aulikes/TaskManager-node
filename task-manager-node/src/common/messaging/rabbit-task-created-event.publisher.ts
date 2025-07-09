@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TaskCreatedEvent } from '../task/event/task-created.event';
-import { AppLogger } from '../logger/app.logger';
+import { TaskCreatedEvent } from '../../task/event/task-created.event';
+import { AppLogger } from '../../logger/app.logger';
 import { RabbitMQPublisherService } from './rabbitmq-publisher.service';
 
 @Injectable()

@@ -7,12 +7,14 @@ import { PostgresTaskRepository } from './repository/task.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskEntity } from './model/task.entity';
 import { AppLogger } from '../logger/app.logger';
-import { RabbitMQModule } from '../messaging/rabbitmq.module';
+import { RabbitMQModule } from '../common/messaging/rabbitmq.module';
+import { SchemaModule } from '../common/schema/schema.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskEntity]),
     RabbitMQModule, 
+    SchemaModule, 
   ],
   controllers: [TaskController],
   providers: [

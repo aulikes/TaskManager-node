@@ -3,7 +3,7 @@ import { TaskEntity } from '../model/task.entity';
 import { TaskUpdatedEvent, TaskState } from '../event/task-updated.event';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { PostgresTaskRepository } from '../repository/task.repository';
-import { RabbitTaskUpdatedEventPublisher } from '../../messaging/rabbit-task-updated-event.publisher';
+import { RabbitTaskUpdatedEventPublisher } from '../../common/messaging/rabbit-task-updated-event.publisher';
 import { AppLogger } from '../../logger/app.logger';
 
 @Injectable()
