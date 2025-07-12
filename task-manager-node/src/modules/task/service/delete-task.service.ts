@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskEntity } from '../model/task.entity';
 import { TaskDeletedEvent } from '../event/task-deleted.event';
 import { PostgresTaskRepository } from '../repository/task.repository';
-import { RabbitTaskDeletedEventPublisher } from '../../common/messaging/rabbit-task-deleted-event.publisher';
-import { AppLogger } from '../../logger/app.logger';
+import { RabbitTaskDeletedEventPublisher } from '../../../common/messaging/rabbit-task-deleted-event.publisher';
+import { AppLogger } from '../../../logger/app.logger';
 
 @Injectable()
 export class DeleteTaskService {

@@ -10,7 +10,7 @@ import { FailedEvent, FailedEventSchema } from './failed-event.schema';
         imports: [ConfigModule],
         inject: [ConfigService],
         useFactory: (config: ConfigService) => ({
-            uri: config.getOrThrow<string>('MONGODB_URI'),
+            uri: config.getOrThrow<string>('FAILED_EVENT_MONGO_URI'),
         }),
     }),
     MongooseModule.forFeature([

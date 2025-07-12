@@ -6,9 +6,9 @@ import { DeleteTaskService } from './service/delete-task.service';
 import { PostgresTaskRepository } from './repository/task.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskEntity } from './model/task.entity';
-import { AppLogger } from '../logger/app.logger';
-import { RabbitMQModule } from '../common/messaging/rabbitmq.module';
-import { SchemaModule } from '../common/schema/schema.module';
+import { AppLogger } from '../../logger/app.logger';
+import { RabbitMQModule } from '../../common/messaging/rabbitmq.module';
+import { SchemaModule } from '../../common/failed-event/failed-event.module';
 
 @Module({
   imports: [

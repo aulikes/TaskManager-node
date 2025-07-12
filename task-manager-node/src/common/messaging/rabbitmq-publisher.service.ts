@@ -7,7 +7,7 @@ import { retryWithTimeout } from '../../util/retry-with-timeout.util';
 import { getClassMethodContextLabel } from '../../util/get-class-method-context-label.util';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { FailedEvent, FailedEventDocument } from '../schema/failed-event.schema';
+import { FailedEvent, FailedEventDocument } from '../failed-event/failed-event.schema';
 
 
 @Injectable()
@@ -82,7 +82,7 @@ export class RabbitMQPublisherService implements OnModuleInit {
       });
 
       this.logger.warn('Event saved to failed_events collection');
-      // Aquí podrías emitir una alerta o lanzar una excepción controlada si lo deseas
+      // Aquí se podría emitir una alerta o lanzar una excepción controlada
     }
   }
 }

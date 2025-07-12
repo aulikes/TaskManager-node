@@ -4,8 +4,8 @@ import { TaskStatus } from '../model/task-status.enum';
 import { TaskCreatedEvent } from '../event/task-created.event';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { PostgresTaskRepository } from '../repository/task.repository';
-import { RabbitTaskCreatedEventPublisher } from '../../common/messaging/rabbit-task-created-event.publisher';
-import { AppLogger } from '../../logger/app.logger';
+import { RabbitTaskCreatedEventPublisher } from '../../../common/messaging/rabbit-task-created-event.publisher';
+import { AppLogger } from '../../../logger/app.logger';
 
 @Injectable()
 export class CreateTaskService {
@@ -31,7 +31,7 @@ export class CreateTaskService {
       this.logger.log('Persistiendo en base de datos...');
       const saved = await this.repository.save(task);
 
-      this.logger.log('Preparando para publicar evento de la entidad...' + saved);
+      this.logger.log('Preparando para publicar evento de la entidad...');
       await this.eventPublisher.publish(
         new TaskCreatedEvent(
           saved.id!,
@@ -41,8 +41,6 @@ export class CreateTaskService {
           saved.createdAt
         )
       );
-
-      this.logger.log('Task publicada exitosamente.');
       return saved;
 
     } catch (error) {
