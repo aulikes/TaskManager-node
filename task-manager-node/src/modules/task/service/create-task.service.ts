@@ -6,6 +6,8 @@ import { CreateTaskDto } from '../dto/create-task.dto';
 import { PostgresTaskRepository } from '../repository/task.repository';
 import { RabbitTaskCreatedEventPublisher } from '../../../common/messaging/rabbit-task-created-event.publisher';
 import { AppLogger } from '../../../logger/app.logger';
+import { DomainException } from '../../../common/exceptions/domain-exception';
+
 
 @Injectable()
 export class CreateTaskService {
@@ -21,6 +23,16 @@ export class CreateTaskService {
    */
   async execute(dto: CreateTaskDto): Promise<TaskEntity> {
     try {
+      this.logger.log('Verificando si ya existe una tarea con el mismo título...');
+      const existing = await this.repository.findByTitle(dto.title);
+      if (existing) {
+        this.logger.warn(`Tarea duplicada: ya existe una con título "${dto.title}"`);
+        throw new DomainException(
+          'A task with this title already exists',
+          'TASK_ALREADY_EXISTS',
+          409,
+        );
+      }
       this.logger.log('Creando entidad de Task...');
       const task = new TaskEntity();
       task.title = dto.title;
@@ -44,8 +56,17 @@ export class CreateTaskService {
       return saved;
 
     } catch (error) {
-      this.logger.error('Error al ejecutar el caso de uso CreateTask:', error);
-      throw error;
+      if (error instanceof DomainException) {
+        this.logger.warn(`Error de dominio: ${error.message}`);
+        throw error;
+      }
+
+      this.logger.error('Error inesperado al ejecutar CreateTask:', error);
+      throw new DomainException(
+        'Unexpected error while creating task',
+        'TASK_CREATE_FAILURE',
+        500,
+      );
     }
   }
 }

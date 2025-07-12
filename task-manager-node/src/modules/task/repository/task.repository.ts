@@ -20,6 +20,14 @@ export class PostgresTaskRepository {
   }
 
   /**
+   * Busca una tarea por su título. Devuelve la entidad si existe, o null si no.
+   */
+  async findByTitle(title: string): Promise<TaskEntity | null> {
+    const task = await this.ormRepo.findOne({ where: { title } });
+    return task;
+  }
+
+  /**
    * Busca una tarea por su ID. Devuelve una entidad de dominio si se encuentra, o null si no.
    */
   async findById(id: number): Promise<TaskEntity | null> {

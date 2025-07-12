@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { AppLogger } from '../logger/app.logger';
-import { TimeoutError } from '../error/timeout.error';
+import { TimeoutError } from '../common/exceptions/timeout.error';
 
 /**
  * Ejecuta una función con reintentos y timeout configurable por intento.

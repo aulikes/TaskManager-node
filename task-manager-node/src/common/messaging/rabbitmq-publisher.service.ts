@@ -34,9 +34,7 @@ export class RabbitMQPublisherService implements OnModuleInit {
 
   /**
    * Publica un mensaje al exchange usando retry + timeout por intento.
-   * @param exchange Nombre del exchange
-   * @param routingKey Routing key del mensaje
-   * @param payload Cuerpo del mensaje
+   * Si falla, persiste el evento fallido en MongoDB y lanza una excepción.
    */
   async publish(exchange: string, routingKey: string, payload: any): Promise<void> {
     if (!this.channel) throw new Error('RabbitMQ channel not initialized');
