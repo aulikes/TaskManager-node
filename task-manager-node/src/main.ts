@@ -23,20 +23,30 @@ async function bootstrap() {
       transform: true,               // Convierte automáticamente tipos (ej: string a number)
     }),
   );
-
-  // Registrar el filtro global de excepciones
+  
+  // Filtro global para manejo uniforme de errores o excepciones
   app.useGlobalFilters(new GlobalExceptionFilter());
 
-  // Declarar los exchanges y colas
+  // Declarar exchanges y colas de RabbitMQ
   try {
     await declareRabbitBindings(config);
-    logger.log('RabbitMQ bindings successfully declared');
+    logger.log('RabbitMQ bindings successfully declared', 'Bootstrap');
   } catch (err) {
     logger.error(
-      `Failed to declare RabbitMQ bindings: ${(err as Error).message}`,
+      'Failed to declare RabbitMQ bindings',
       (err as Error).stack,
     );
-    process.exit(1); // Abortamos si Rabbit no está disponible
+    process.exit(1); // Termina la app si falla la declaración de bindings
+  }
+
+  // Validar disponibilidad de servicios externos antes de levantar el servidor
+  try {
+    logger.log('Verificando servicios externos...', 'HealthCheck');
+    await app.get(HealthService).check();
+    logger.log('Todos los servicios están disponibles', 'HealthCheck');
+  } catch (error) {
+    logger.error('Error en verificación de servicios críticos', error);
+    process.exit(1);
   }
 
   //OPENAPI CONFIGURATION
@@ -45,23 +55,12 @@ async function bootstrap() {
     .setDescription('API for managing tasks')
     .setVersion('1.0')
     .build();
-
   const document = SwaggerModule.createDocument(app, openApi);
   SwaggerModule.setup('api', app, document);
-
-  // Validar dependencias antes de iniciar
-  try {
-    logger.log('Verificando disponibilidad de servicios externos...');
-    await app.get(HealthService).check(); // Si falla, lanza excepción
-    logger.log('Todos los servicios externos están disponibles.');
-  } catch (error) {
-    logger.error('Error en validación de dependencias críticas:', error);
-    process.exit(1); // Termina la app si algo está caído
-  }
 
   //PORT CONFIGURATION
   const port = config.getOrThrow<number>('PORT');
   await app.listen(port);
-  logger.log(`TaskManager-node is running on port ${port}`);
+  logger.log(`TaskManager-node is running on port ${port}`, 'Bootstrap');
 }
 bootstrap();
