@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { AppLogger } from './logger/app.logger';
 import { ConfigService } from '@nestjs/config';
+import { declareRabbitBindings } from './config/declare-bindings';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter'; // importar el filtro
 import { HealthService } from './health/health.service';
@@ -25,6 +26,18 @@ async function bootstrap() {
 
   // Registrar el filtro global de excepciones
   app.useGlobalFilters(new GlobalExceptionFilter());
+
+  // Declarar los exchanges y colas
+  try {
+    await declareRabbitBindings(config);
+    logger.log('RabbitMQ bindings successfully declared');
+  } catch (err) {
+    logger.error(
+      `Failed to declare RabbitMQ bindings: ${(err as Error).message}`,
+      (err as Error).stack,
+    );
+    process.exit(1); // Abortamos si Rabbit no está disponible
+  }
 
   //OPENAPI CONFIGURATION
   const openApi = new DocumentBuilder()
