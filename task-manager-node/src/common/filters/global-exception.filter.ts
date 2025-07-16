@@ -9,7 +9,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { DomainException } from '../exceptions/domain-exception';
+import { DomainException } from '../exceptions/domain.exception';
 import { MessagePublishingException } from '../exceptions/message-publishing.exception';
 
 

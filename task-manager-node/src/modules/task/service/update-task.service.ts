@@ -5,7 +5,7 @@ import { UpdateTaskDto } from '../dto/update-task.dto';
 import { PostgresTaskRepository } from '../repository/task.repository';
 import { RabbitTaskUpdatedEventPublisher } from '../../../common/messaging/rabbit-task-updated-event.publisher';
 import { AppLogger } from '../../../logger/app.logger';
-import { DomainException } from '../../../common/exceptions/domain-exception';
+import { DomainException } from '../../../common/exceptions/domain.exception';
 
 @Injectable()
 export class UpdateTaskService {
