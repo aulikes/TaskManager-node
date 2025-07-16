@@ -11,6 +11,7 @@ import { FailedTaskEventService } from './failed-event.service';
     LoggerModule,
     // Conexión a MongoDB usando Mongoose
     MongooseModule.forRootAsync({
+      connectionName: 'connection-mongobd-failed-events',
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -18,8 +19,9 @@ import { FailedTaskEventService } from './failed-event.service';
       }),
     }),
     MongooseModule.forFeature([
-      { name: FailedEvent.name, schema: FailedEventSchema },
-    ]),
+        { name: FailedEvent.name, schema: FailedEventSchema },
+      ],
+      'connection-mongobd-failed-events',),
 ],
   providers: [FailedTaskEventService],
   exports: [FailedTaskEventService],

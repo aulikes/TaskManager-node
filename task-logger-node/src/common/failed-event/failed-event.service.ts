@@ -6,7 +6,7 @@ import { FailedEvent, FailedEventDocument } from './failed-event.schema';
 @Injectable()
 export class FailedTaskEventService {
   constructor(
-    @InjectModel(FailedEvent.name)
+    @InjectModel(FailedEvent.name, 'connection-mongobd-failed-events')
     private readonly failedModel: Model<FailedEventDocument>,
   ) {}
 

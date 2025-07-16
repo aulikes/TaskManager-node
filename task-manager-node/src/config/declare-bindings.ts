@@ -3,16 +3,18 @@ import { ConfigService } from '@nestjs/config';
 import { getRabbitMqUri } from '../util/get-rabbitmq-uri';
 
 /**
- * Declara exchanges y colas necesarias para el sistema.
- * No configura DLQ porque el manejo de fallos es manual (persistencia en MongoDB).
+ * Declara exchanges, colas y sus bindings, incluyendo configuración de DLQ
  */
 export async function declareRabbitBindings(config: ConfigService): Promise<void> {
 
   const uri = getRabbitMqUri(config); // Obtiene la URI de RabbitMQ desde la configuración
   const exchange = config.getOrThrow('RABBITMQ_EXCHANGE'); // Obtiene el nombre del exchange principal desde la configuración
-  
-  if (!exchange) throw new Error('RABBITMQ_EXCHANGE not defined in environment variables');
+  const dlqExchange = config.getOrThrow('DLQ_EXCHANGE'); // Obtiene el nombre del exchange de la DLQ desde la configuración
 
+  // Declarar colas DLQ
+  const dlqQueue = config.getOrThrow('TASK_DLQ'); // Obtiene el nombre de la cola DLQ desde la configuración
+  const dlqRoutingKey = config.getOrThrow('TASK_DLQ_ROUTING_KEY'); // Routing key usada para mensajes fallidos (usualmente se ignora si es fanout)
+  
   try {
     // Establecer conexión con RabbitMQ
     const connection = await connect(uri);
@@ -28,8 +30,16 @@ export async function declareRabbitBindings(config: ConfigService): Promise<void
       console.error('RabbitMQ channel error during declaration', err);
     });
 
-    // Declarar exchange de tipo 'topic' para enrutar por routing key
+    // Declarar exchange principal de tipo 'topic' para enrutar por routing key
     await channel.assertExchange(exchange, 'topic', { durable: true });
+
+    // Declarar exchange de la DLQ (tipo fanout o direct)
+    await channel.assertExchange(dlqExchange, 'fanout', { durable: true });
+  
+    // Declarar cola DLQ donde llegarán los mensajes fallidos
+    await channel.assertQueue(dlqQueue, { durable: true });
+    // Enlazar la cola DLQ al exchange de la DLQ
+    await channel.bindQueue(dlqQueue, dlqExchange, dlqRoutingKey);
 
     // Configurar las colas principales con sus respectivas routing keys
     const bindings = [
@@ -39,6 +49,7 @@ export async function declareRabbitBindings(config: ConfigService): Promise<void
     ];
 
     // Crear las colas principales y asociarlas al exchange principal
+    // Además, asignar la DLQ mediante el argumento 'x-dead-letter-exchange'
     for (const { queue, key } of bindings) {
       // Validación estricta: si falta algo, se lanza error
       if (!queue || !key) {
@@ -46,13 +57,19 @@ export async function declareRabbitBindings(config: ConfigService): Promise<void
       }
       // Declara la cola (queue) en RabbitMQ, asegurando que sea durable.
       // 'durable: true' indica que la cola persiste incluso si RabbitMQ se reinicia.
-      await channel.assertQueue(queue, { durable: true });
-      // Enlaza la cola al exchange especificado usando una routing key.
-      // Esto significa que cualquier mensaje publicado en el exchange con esa routing key
-      // será enviado a esta cola.
+      await channel.assertQueue(queue, {
+        durable: true,
+        arguments: {
+          // Esto indica que si hay error en esta cola, el mensaje irá a la DLQ
+          'x-dead-letter-exchange': dlqExchange,
+        },
+      });
+    
+      // Enlazar la cola con su routing key al exchange principal
       await channel.bindQueue(queue, exchange, key);
     }
 
+    // Cerrar el canal y la conexión
     await channel.close();
     await connection.close();
   } catch (error) {

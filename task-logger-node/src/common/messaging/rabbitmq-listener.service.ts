@@ -28,7 +28,13 @@ export class RabbitMqListenerService {
 
     const connection = await amqp.connect(uri);
     const channel = await connection.createChannel();
-    await channel.assertQueue(queue, { durable: true });
+    
+    await channel.assertQueue(queue, {
+      durable: true,
+      arguments: {
+        'x-dead-letter-exchange': 'task.events.dlq'
+      }
+    });
 
     this.logger.log(`Connected to queue: ${queue}`, 'RabbitMqListenerService');
 

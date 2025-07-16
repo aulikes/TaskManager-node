@@ -13,7 +13,7 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class TaskDeletedService {
   constructor(
-    @InjectModel(TaskDeletedEvent.name)
+    @InjectModel(TaskDeletedEvent.name, 'connection-mongobd-logger-events')
     private readonly model: Model<TaskDeletedEventDocument>,
     private readonly logger: AppLogger,
   ) {}
