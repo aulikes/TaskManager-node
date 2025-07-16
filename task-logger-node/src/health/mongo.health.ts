@@ -9,21 +9,43 @@ export class MongoHealthIndicator {
     private readonly logger: AppLogger,
   ) {}
 
-  /**
-   * Verifica la conexión a MongoDB.
-   */
-  async isHealthy(): Promise<HealthIndicatorResult> {
-    try {
-      const result = await this.mongooseIndicator.pingCheck('mongodb');
-      return result;
-    } catch (err) {
-      this.logger.error(`MongoDB health check failed: ${err.message}`);
-      return {
-          mongo: {
-              status: 'down',
-              message: err.message,
-          },
-      };
-    }
-  }
+  // /**
+  //  * Verifica la conexión con la base de datos principal (task-events)
+  //  */
+  // async isTaskEventsDbHealthy(): Promise<HealthIndicatorResult> {
+  //   try {
+  //     const result = await this.mongooseIndicator.pingCheck('task-events', {
+  //       connection: 'task-events',
+  //     });
+  //     return result;
+  //   } catch (err) {
+  //     this.logger.error(`MongoDB 'task-events' health check failed: ${err.message}`);
+  //     return {
+  //       'mongo-task-events': {
+  //         status: 'down',
+  //         message: err.message,
+  //       },
+  //     };
+  //   }
+  // }
+
+  // /**
+  //  * Verifica la conexión con la base de datos secundaria (failed-events)
+  //  */
+  // async isFailedEventsDbHealthy(): Promise<HealthIndicatorResult> {
+  //   try {
+  //     const result = await this.mongooseIndicator.pingCheck('failed-events', {
+  //       connection: 'failed-events',
+  //     });
+  //     return result;
+  //   } catch (err) {
+  //     this.logger.error(`MongoDB 'failed-events' health check failed: ${err.message}`);
+  //     return {
+  //       'mongo-failed-events': {
+  //         status: 'down',
+  //         message: err.message,
+  //       },
+  //     };
+  //   }
+  // }
 }

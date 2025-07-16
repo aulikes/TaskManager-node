@@ -15,17 +15,19 @@ import { TaskDeletedService } from './service/task-deleted.service';
 
     // Conexión a MongoDB usando Mongoose
     MongooseModule.forRootAsync({
+      connectionName: 'connection-mongobd-logger-events',
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.getOrThrow<string>('MONGODB_URI'),
+        uri: config.getOrThrow<string>('MONGODB_URI')
       }),
     }),
     MongooseModule.forFeature([
-      { name: TaskCreatedEvent.name, schema: TaskCreatedEventSchema },
-      { name: TaskUpdatedEvent.name, schema: TaskUpdatedEventSchema },
-      { name: TaskDeletedEvent.name, schema: TaskDeletedEventSchema },
-    ]),
+        { name: TaskCreatedEvent.name, schema: TaskCreatedEventSchema },
+        { name: TaskUpdatedEvent.name, schema: TaskUpdatedEventSchema },
+        { name: TaskDeletedEvent.name, schema: TaskDeletedEventSchema },
+      ], 
+      'connection-mongobd-logger-events')
   ],
   controllers: [],
   providers: [

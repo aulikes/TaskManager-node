@@ -1,11 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TaskCreatedEvent, TaskCreatedEventSchema } from './task/schema/task-created-event.schema';
-import { TaskUpdatedEvent, TaskUpdatedEventSchema } from './task/schema/task-updated-event.schema';
-import { TaskDeletedEvent, TaskDeletedEventSchema } from './task/schema/task-deleted-event.schema';
 import { AppLogger } from './logger/app.logger';
 import { HealthModule } from './health/health.module';
-import { RabbitMqModule } from './messaging/rabbitmq/rabbitmq.module';
+import { RabbitMqModule } from './common/messaging/rabbitmq.module';
+import { FailedEventModule } from './common/failed-event/failed-event.module';
 import { TaskModule } from './task/task.module';
 
 @Module({
@@ -14,6 +12,7 @@ import { TaskModule } from './task/task.module';
     HealthModule,
     RabbitMqModule,
     TaskModule,
+    FailedEventModule,
   ],
   controllers: [],
   providers: [
