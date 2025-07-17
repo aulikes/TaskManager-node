@@ -54,7 +54,8 @@ src/
 │
 ├── util/                          # Funciones utilitarias
 │   ├── get-rabbitmq-uri.ts       # Construye la URI de conexión a RabbitMQ desde variables de entorno.
-│   └── retry-flexible-util.ts    # Implementa lógica de retry flexible para mayor resiliencia.
+│   ├── retry-flexible-util.ts    # Implementa lógica de retry flexible para mayor resiliencia.
+│   └── retry-persist.util.ts     # Utilidad de retry con control de intentos
 │
 ├── common/                        # Funcionalidades comunes reutilizables
 │   ├── failed-event/             

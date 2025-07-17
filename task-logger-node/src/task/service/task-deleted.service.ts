@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
 import { AppLogger } from '../../logger/app.logger';
 import { TaskDeletedEventDto } from '../dto/task-deleted-event.dto';
 import { TaskDeletedEvent, TaskDeletedEventDocument } from '../schema/task-deleted-event.schema';
 import { BadRequestException } from '@nestjs/common';
 import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
+import { RetryPersist } from '../../util/retry-persist.util';
 
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
@@ -13,11 +15,16 @@ import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class TaskDeletedService {
+  private readonly retryPersist: RetryPersist;
+
   constructor(
     @InjectModel(TaskDeletedEvent.name, NAME_CONNECTION_LOGGER_EVENTS)
     private readonly model: Model<TaskDeletedEventDocument>,
     private readonly logger: AppLogger,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.retryPersist = new RetryPersist(this.configService, this.logger);
+  }
 
   /**
    * Guarda un evento de actualización de tarea en MongoDB.
@@ -25,9 +32,12 @@ export class TaskDeletedService {
    */
   async saveEvent(payload : any): Promise<void> {
       const event = await this.getTaskCreatedEvent(payload);
+
+    await this.retryPersist.execute(async () => {
       const doc = new this.model(event);
       await doc.save();
-      this.logger.log(`TaskDeletedEvent persisted (id: ${event.id})`, 'TaskDeletedService');
+      this.logger.log(`Evento TaskDeletedEvent persistido (id: ${event.id})`, 'TaskDeletedService');
+    });
   }
 
   private async getTaskCreatedEvent(payload : any) : Promise<TaskDeletedEvent> {

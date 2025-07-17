@@ -32,11 +32,11 @@ export class TaskCreatedListener implements OnModuleInit {
 
         await this.taskCreatedService.saveEvent(payload);
         this.logger.log('Task event saved to MongoDB', 'TaskCreatedListener');
-        channel.nack(msg, false, false);
+        channel.ack(msg);
       } catch (err) {
         if (err instanceof BadRequestException) {
           this.logger.warn('Error capturado: ' + err.message);
-          channel.nack(msg, false, false);
+          channel.nack(msg, false, false); 
         } // Duplicado: el evento ya se guardó antes
         else if (err.name === 'MongoServerError' && err.code === 11000) {
           channel.nack(msg, false, false);
