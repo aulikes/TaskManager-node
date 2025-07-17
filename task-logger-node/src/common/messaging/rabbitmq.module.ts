@@ -7,6 +7,7 @@ import { RabbitMqListenerService } from './rabbitmq-listener.service';
 import { TaskCreatedListener } from './rabbit-task-created-event.listener';
 import { TaskUpdatedListener } from './rabbit-task-updated-event.listener';
 import { TaskDeletedListener } from './rabbit-task-deleted-event.listener';
+import { FailedTaskEventListener } from './rabbit-failed-event.listener';
 
 @Module({
   imports: [ConfigModule, LoggerModule, TaskModule, FailedEventModule],
@@ -15,6 +16,7 @@ import { TaskDeletedListener } from './rabbit-task-deleted-event.listener';
     TaskCreatedListener,
     TaskUpdatedListener,
     TaskDeletedListener,
+    FailedTaskEventListener,
   ],
   exports: [RabbitMqListenerService],
 })

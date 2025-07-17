@@ -62,6 +62,7 @@ export async function declareRabbitBindings(config: ConfigService): Promise<void
         arguments: {
           // Esto indica que si hay error en esta cola, el mensaje irá a la DLQ
           'x-dead-letter-exchange': dlqExchange,
+          'x-dead-letter-routing-key': dlqRoutingKey,
         },
       });
     
