@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema({ collection: 'failed_events', timestamps: true })
-export class FailedEvent {
+export class FailedEvent extends Document {
     
   @Prop({ required: true })
   originalQueue: string;
@@ -11,8 +11,8 @@ export class FailedEvent {
   @Prop({ required: true })
   routingKey: string;
 
-  @Prop({ required: true })
-  payload: string;
+  @Prop({ type: Object, required: true }) 
+  payload: Record<string, any>;
 
   @Prop()
   error: string;

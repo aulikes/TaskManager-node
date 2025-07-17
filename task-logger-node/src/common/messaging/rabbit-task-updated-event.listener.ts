@@ -28,15 +28,15 @@ export class TaskUpdatedListener implements OnModuleInit {
         const data = msg.content.toString();
         const payload = JSON.parse(data);
 
-        this.logger.log('Received event: task.updated');
-        this.logger.log('Raw payload: ' + JSON.stringify(data));
+        this.logger.log('Received event: task.updated', 'TaskUpdatedListener');
+        this.logger.log('Raw payload: ' + JSON.stringify(data), 'TaskUpdatedListener');
 
         await this.taskUpdatedService.saveEvent(payload);
         this.logger.log('Task updated event saved to MongoDB', 'TaskUpdatedListener');
         channel.ack(msg);
       } catch (err) {
         if (err instanceof BadRequestException) {
-          this.logger.warn('Error capturado: ' + err.message);
+          this.logger.warn('Error capturado: ' + err.message, 'TaskUpdatedListener');
           channel.ack(msg);
         } // Duplicado: el evento ya se guardó antes
         else if (err.name === 'MongoServerError' && err.code === 11000) {

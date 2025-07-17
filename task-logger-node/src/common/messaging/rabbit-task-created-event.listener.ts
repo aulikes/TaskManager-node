@@ -28,16 +28,16 @@ export class TaskCreatedListener implements OnModuleInit {
         const data = msg.content.toString();
         const payload = JSON.parse(data);
 
-        this.logger.log('Received event: task.created');
-        this.logger.log('Raw payload: ' + JSON.stringify(data));
+        this.logger.log('Received event: task.created', 'TaskCreatedListener');
+        this.logger.log('Raw payload: ' + JSON.stringify(data), 'TaskCreatedListener');
 
         await this.taskCreatedService.saveEvent(payload);
         this.logger.log('Task event saved to MongoDB', 'TaskCreatedListener');
-        channel.ack(msg);
+        channel.nack(msg, false, false);
       } catch (err) {
         if (err instanceof BadRequestException) {
           this.logger.warn('Error capturado: ' + err.message);
-          channel.ack(msg);
+          channel.nack(msg, false, false);
         } // Duplicado: el evento ya se guardó antes
         else if (err.name === 'MongoServerError' && err.code === 11000) {
           channel.nack(msg, false, false);
@@ -46,6 +46,7 @@ export class TaskCreatedListener implements OnModuleInit {
         else {
           // Otro error más grave
           this.logger.error('Failed to persist event to MongoDB', err);
+          channel.nack(msg, false, false);
           return; // No hacemos ack -> RabbitMQ puede reintentar
         }
       }

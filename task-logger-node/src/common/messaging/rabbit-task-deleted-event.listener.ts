@@ -28,20 +28,20 @@ export class TaskDeletedListener implements OnModuleInit {
         const data = msg.content.toString();
         const payload = JSON.parse(data);
 
-        this.logger.log('Received event: task.updated');
-        this.logger.log('Raw payload: ' + JSON.stringify(data));
+        this.logger.log('Received event: task.deleted', 'TaskDeletedListener');
+        this.logger.log('Raw payload: ' + JSON.stringify(data), 'TaskDeletedListener');
 
         await this.taskDeletedService.saveEvent(payload);
-        this.logger.log('Task updated event saved to MongoDB', 'TaskDeletedService');
+        this.logger.log('Task deleted event saved to MongoDB', 'TaskDeletedService');
         channel.ack(msg);
       } catch (err) {
         if (err instanceof BadRequestException) {
-          this.logger.warn('Error capturado: ' + err.message);
+          this.logger.warn('Error capturado: ' + err.message, 'TaskDeletedService');
           channel.ack(msg);
         } // Duplicado: el evento ya se guardó antes
         else if (err.name === 'MongoServerError' && err.code === 11000) {
           channel.nack(msg, false, false);
-          this.logger.warn('Duplicate event skipped', 'TaskCreatedListener');
+          this.logger.warn('Duplicate event skipped', 'TaskDeletedService');
         }
         else {
           // Otro error más grave
