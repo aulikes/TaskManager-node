@@ -94,95 +94,124 @@ src/
 
 ### 🧱 Arquitectura técnica (Mermaid)
 
-
 ```mermaid
 graph TD
-  A[main.ts] --> B[AppModule]
-  B --> C[LoggerModule]
-  B --> D[HealthModule]
-  B --> E[FailedEventModule]
-  B --> F[TaskModule]
-  B --> G[RabbitMqModule]
 
-  G --> G1[rabbitmq-listener.service.ts]
-  G --> G2[rabbitmq.module.ts]
-  G1 --> G3[rabbit-task-created-event.listener.ts]
-  G1 --> G4[rabbit-task-updated-event.listener.ts]
-  G1 --> G5[rabbit-task-deleted-event.listener.ts]
-  G1 --> G6[rabbit-failed-event.listener.ts]
-
-  F --> F1[dto/*.ts]
-  F --> F2[schema/*.ts]
-  F --> F3[service/*.ts]
-
-  E --> E1[failed-event.dto.ts]
-  E --> E2[failed-event.schema.ts]
-  E --> E3[failed-event.service.ts]
-
-  D --> D1[health.controller.ts]
-  D --> D2[health.service.ts]
-  D --> D3[mongo.health.ts]
-  D --> D4[rabbitmq.health.ts]
-
-  C --> C1[app.logger.ts]
-
-  subgraph Configuración
-    B1[declare-bindings.ts]
-    B2[get-rabbitmq-uri.ts]
-    B3[database.constants.ts]
-    B4[retry-flexible-util.ts]
+  subgraph Messaging_Layer
+    MQ1[task.topic.exchange] --> Q1[task.created.queue]
+    MQ1 --> Q2[task.updated.queue]
+    MQ1 --> Q3[task.deleted.queue]
+    DLQ_EXCH[task.dlq.exchange] --> DLQ[task.dlq.queue]
   end
 
-  B --> Configuración
-```
+  subgraph Listener_Layer
+    Q1 --> L1[rabbit-task-created-event.listener.ts]
+    Q2 --> L2[rabbit-task-updated-event.listener.ts]
+    Q3 --> L3[rabbit-task-deleted-event.listener.ts]
+    DLQ --> DLQ_LIS[rabbit-failed-event.listener.ts]
+  end
 
+  subgraph Service_Layer
+    L1 --> S1[task-created.service.ts]
+    L2 --> S2[task-updated.service.ts]
+    L3 --> S3[task-deleted.service.ts]
+    DLQ_LIS --> S4[failed-event.service.ts]
+  end
+
+  subgraph Persistence_Layer
+    S1 --> DB1[task-created-event.schema.ts]
+    S2 --> DB2[task-updated-event.schema.ts]
+    S3 --> DB3[task-deleted-event.schema.ts]
+    S4 --> DB4[failed-event.schema.ts]
+  end
+
+  subgraph Health_Check_Layer
+    H1[mongo.health.ts]
+    H2[rabbitmq.health.ts]
+    H3[health.service.ts]
+  end
+```
 
 ---
 
-# Diagrama de Flujo - task-logger-node
+# Diagrama de Flujo
 
 Este diagrama muestra el flujo completo de eventos dentro del sistema `task-logger-node`, incluyendo el consumo exitoso y el manejo de eventos fallidos con Dead Letter Queue (DLQ).
 
 ```mermaid
 flowchart TD
-    subgraph Broker [RabbitMQ]
-        EXCH[Exchange: task.topic.exchange]
-        QUEUE_CREATED[task.created.queue]
-        QUEUE_UPDATED[task.updated.queue]
-        QUEUE_DELETED[task.deleted.queue]
-        DLQ[task.dlq.queue]
-        DLQ_EXCH[Exchange: task.dlq.exchange]
+    subgraph Broker["RabbitMQ"]
+        EXCH["Exchange: task.topic.exchange"]
+        QUEUE_CREATED["task.created.queue"]
+        QUEUE_UPDATED["task.updated.queue"]
+        QUEUE_DELETED["task.deleted.queue"]
+        DLQ_EXCH["Exchange: task.dlq.exchange"]
+        DLQ["task.dlq.queue"]
     end
 
-    subgraph App [task-logger-node]
-        L1[rabbit-task-created-event.listener.ts]
-        L2[rabbit-task-updated-event.listener.ts]
-        L3[rabbit-task-deleted-event.listener.ts]
-        DLQ_LISTENER[rabbit-failed-event.listener.ts]
+    subgraph App["task-logger-node"]
+        subgraph Listeners
+            L1["rabbit-task-created-event.listener.ts"]
+            L2["rabbit-task-updated-event.listener.ts"]
+            L3["rabbit-task-deleted-event.listener.ts"]
+            DLQ_LISTENER["rabbit-failed-event.listener.ts"]
+        end
 
-        S1[task-created.service.ts]
-        S2[task-updated.service.ts]
-        S3[task-deleted.service.ts]
-        DLQ_SVC[failed-event.service.ts]
+        subgraph Services
+            S1["task-created.service.ts"]
+            S2["task-updated.service.ts"]
+            S3["task-deleted.service.ts"]
+            DLQ_SVC["failed-event.service.ts"]
+        end
 
-        DB1[(MongoDB: task_logger_db)]
-        DB2[(MongoDB: task_failed_event_db)]
+        subgraph Schemas
+            SC1["task-created-event.schema.ts"]
+            SC2["task-updated-event.schema.ts"]
+            SC3["task-deleted-event.schema.ts"]
+            SC_DLQ["failed-event.schema.ts"]
+        end
+
+        subgraph Databases
+            DB1["MongoDB: task_logger_db"]
+            DB2["MongoDB: task_failed_event_db"]
+        end
     end
 
-    EXCH -- task.created --> QUEUE_CREATED
-    EXCH -- task.updated --> QUEUE_UPDATED
-    EXCH -- task.deleted --> QUEUE_DELETED
+    EXCH -- "task.created" --> QUEUE_CREATED
+    EXCH -- "task.updated" --> QUEUE_UPDATED
+    EXCH -- "task.deleted" --> QUEUE_DELETED
 
-    QUEUE_CREATED --> L1 --> S1 --> DB1
-    QUEUE_UPDATED --> L2 --> S2 --> DB1
-    QUEUE_DELETED --> L3 --> S3 --> DB1
+    QUEUE_CREATED --> L1
+    L1 -->|Procesa evento| S1
+    S1 -->|Usa esquema| SC1
+    SC1 -->|Persistencia| DB1
 
-    QUEUE_CREATED -- Error --> DLQ_EXCH --> DLQ
-    QUEUE_UPDATED -- Error --> DLQ_EXCH --> DLQ
-    QUEUE_DELETED -- Error --> DLQ_EXCH --> DLQ
+    QUEUE_UPDATED --> L2
+    L2 -->|Procesa evento| S2
+    S2 -->|Usa esquema| SC2
+    SC2 --> DB1
 
-    DLQ --> DLQ_LISTENER --> DLQ_SVC --> DB2
+    QUEUE_DELETED --> L3
+    L3 -->|Procesa evento| S3
+    S3 -->|Usa esquema| SC3
+    SC3 --> DB1
+
+    %% Flujo de errores hacia la DLQ
+    L1 -- Error --> DLQ_EXCH
+    L2 -- Error --> DLQ_EXCH
+    L3 -- Error --> DLQ_EXCH
+    DLQ_EXCH --> DLQ
+
+    %% Procesamiento de mensajes fallidos
+    DLQ --> DLQ_LISTENER
+    DLQ_LISTENER -->|Persiste error| DLQ_SVC
+    DLQ_SVC -->|Usa esquema| SC_DLQ
+    SC_DLQ --> DB2
+
+    %% Estilo visual de errores (líneas punteadas rojas)
+    linkStyle 16,17,18 stroke:red,stroke-width:2px,stroke-dasharray: 5 5
 ```
+
 
 ---
 
