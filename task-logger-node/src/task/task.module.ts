@@ -8,6 +8,7 @@ import { TaskDeletedEvent, TaskDeletedEventSchema } from './schema/task-deleted-
 import { TaskCreatedService } from './service/task-created.service';
 import { TaskUpdatedService } from './service/task-updated.service';
 import { TaskDeletedService } from './service/task-deleted.service';
+import { NAME_CONNECTION_LOGGER_EVENTS } from '../config/database.constants';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { TaskDeletedService } from './service/task-deleted.service';
 
     // Conexión a MongoDB usando Mongoose
     MongooseModule.forRootAsync({
-      connectionName: 'connection-mongobd-logger-events',
+      connectionName: NAME_CONNECTION_LOGGER_EVENTS,
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -27,7 +28,7 @@ import { TaskDeletedService } from './service/task-deleted.service';
         { name: TaskUpdatedEvent.name, schema: TaskUpdatedEventSchema },
         { name: TaskDeletedEvent.name, schema: TaskDeletedEventSchema },
       ], 
-      'connection-mongobd-logger-events')
+      NAME_CONNECTION_LOGGER_EVENTS)
   ],
   controllers: [],
   providers: [

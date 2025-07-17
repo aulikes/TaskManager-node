@@ -5,6 +5,7 @@ import { AppLogger } from '../../logger/app.logger';
 import { TaskDeletedEventDto } from '../dto/task-deleted-event.dto';
 import { TaskDeletedEvent, TaskDeletedEventDocument } from '../schema/task-deleted-event.schema';
 import { BadRequestException } from '@nestjs/common';
+import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
 
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
@@ -13,7 +14,7 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class TaskDeletedService {
   constructor(
-    @InjectModel(TaskDeletedEvent.name, 'connection-mongobd-logger-events')
+    @InjectModel(TaskDeletedEvent.name, NAME_CONNECTION_LOGGER_EVENTS)
     private readonly model: Model<TaskDeletedEventDocument>,
     private readonly logger: AppLogger,
   ) {}
@@ -44,7 +45,7 @@ export class TaskDeletedService {
     this.logger.log('DTO validated successfully');
     this.logger.debug('Validated DTO: ' + JSON.stringify(dto));
 
-    // Guarda en MONGO DB
+    // crea el evento de tarea eliminada
     const taskEvent: TaskDeletedEvent = {
       id: dto.id,
       title: dto.title,

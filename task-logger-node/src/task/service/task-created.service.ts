@@ -5,6 +5,7 @@ import { AppLogger } from '../../logger/app.logger';
 import { TaskCreatedEventDto } from '../dto/task-created-event.dto';
 import { TaskCreatedEvent, TaskCreatedEventDocument } from '../schema/task-created-event.schema';
 import { BadRequestException } from '@nestjs/common';
+import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
 
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
@@ -13,7 +14,7 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class TaskCreatedService {
   constructor(
-    @InjectModel(TaskCreatedEvent.name, 'connection-mongobd-logger-events')
+    @InjectModel(TaskCreatedEvent.name, NAME_CONNECTION_LOGGER_EVENTS)
     private readonly model: Model<TaskCreatedEventDocument>,
     private readonly logger: AppLogger,
   ) {}
@@ -41,7 +42,7 @@ export class TaskCreatedService {
     this.logger.log('DTO validated successfully');
     this.logger.debug('Validated DTO: ' + JSON.stringify(dto));
 
-    // Guarda en MONGO DB
+    // crea el evento de tarea creada
     const taskEvent: TaskCreatedEvent = {
       id: dto.id,
       title: dto.title,

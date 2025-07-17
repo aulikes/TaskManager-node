@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from '../../logger/logger.module';
 import { FailedEvent, FailedEventSchema } from './failed-event.schema';
 import { FailedTaskEventService } from './failed-event.service';
+import { NAME_CONNECTION_FAILED_EVENTS } from '../../config/database.constants';
 
 @Module({
   // Conexión directa a la base de datos task_failed_event_db
@@ -11,7 +12,7 @@ import { FailedTaskEventService } from './failed-event.service';
     LoggerModule,
     // Conexión a MongoDB usando Mongoose
     MongooseModule.forRootAsync({
-      connectionName: 'connection-mongobd-failed-events',
+      connectionName: NAME_CONNECTION_FAILED_EVENTS,
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -21,7 +22,7 @@ import { FailedTaskEventService } from './failed-event.service';
     MongooseModule.forFeature([
         { name: FailedEvent.name, schema: FailedEventSchema },
       ],
-      'connection-mongobd-failed-events',),
+      NAME_CONNECTION_FAILED_EVENTS),
 ],
   providers: [FailedTaskEventService],
   exports: [FailedTaskEventService],

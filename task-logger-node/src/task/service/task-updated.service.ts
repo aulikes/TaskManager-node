@@ -5,6 +5,7 @@ import { AppLogger } from '../../logger/app.logger';
 import { TaskUpdatedEventDto } from '../dto/task-updated-event.dto';
 import { TaskUpdatedEvent, TaskUpdatedEventDocument } from '../schema/task-updated-event.schema';
 import { BadRequestException } from '@nestjs/common';
+import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
 
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
@@ -13,7 +14,7 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class TaskUpdatedService {
   constructor(
-    @InjectModel(TaskUpdatedEvent.name, 'connection-mongobd-logger-events')
+    @InjectModel(TaskUpdatedEvent.name, NAME_CONNECTION_LOGGER_EVENTS)
     private readonly model: Model<TaskUpdatedEventDocument>,
     private readonly logger: AppLogger,
   ) {}
@@ -44,7 +45,7 @@ export class TaskUpdatedService {
     this.logger.log('DTO validated successfully');
     this.logger.debug('Validated DTO: ' + JSON.stringify(dto));
 
-    
+    // crea el evento de tarea actualizada
     const taskEvent: TaskUpdatedEvent = {
       before: dto.before,
       after: dto.after,
