@@ -2,7 +2,6 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { AppLogger } from '../../logger/app.logger';
 import { TaskCreatedService } from '../../task/service/task-created.service';
 import { RabbitMqListenerService } from './rabbitmq-listener.service';
-
 import { BadRequestException } from '@nestjs/common';
 
 /**

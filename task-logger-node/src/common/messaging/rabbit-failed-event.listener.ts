@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { AppLogger } from '../../logger/app.logger';
 import { RabbitMqListenerService } from './rabbitmq-listener.service';
 import { FailedTaskEventService } from '../failed-event/failed-event.service';
+import { FailedEventDto } from '../failed-event/failed-event.dto';
 
 @Injectable()
 export class FailedTaskEventListener implements OnModuleInit {
@@ -25,7 +26,24 @@ export class FailedTaskEventListener implements OnModuleInit {
             const content = msg.content.toString();
             const payload = JSON.parse(content);
 
-            await this.failedEventService.saveEvent(payload);
+            // Extraer el error si fue enviado como header (puede que no siempre esté)
+            const headers = msg.properties.headers || {};
+            const deadLetterInfo = headers['x-death']?.[0]; // RabbitMQ pone metadatos de muerte aquí
+    
+            const xDeath = headers['x-death']?.[0];
+            const originalQueue = xDeath?.queue || 'unknown-queue';
+            const originalRoutingKey = xDeath?.['routing-keys']?.[0] || msg.fields.routingKey || 'unknown-key';
+            const reason = xDeath?.reason || 'Unknown reason routed to DLQ';
+
+            // Construcción del DTO con todos los campos esperados
+            const failedEvent: FailedEventDto = {
+              originalQueue: originalQueue,
+              routingKey: originalRoutingKey,
+              payload: payload,
+              error: reason,
+            };
+
+            await this.failedEventService.saveEvent(failedEvent);
 
             this.logger.log(
               `Evento fallido persistido desde la DLQ: ${JSON.stringify(payload)}`,
