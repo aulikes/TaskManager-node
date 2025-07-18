@@ -81,3 +81,9 @@
 {"level":"info","message":"Publishing to task.events with routing key task.updated","service":"task-manager-node","timestamp":"2025-07-18T13:46:49.407Z"}
 {"level":"info","message":"Message published successfully","service":"task-manager-node","timestamp":"2025-07-18T13:46:49.410Z"}
 {"level":"info","message":"Task publicada exitosamente.","service":"task-manager-node","timestamp":"2025-07-18T13:46:49.410Z"}
+{"context":"Bootstrap","level":"info","message":"TaskManager-node is starting...","service":"task-manager-node","timestamp":"2025-07-18T15:12:07.999Z"}
+{"context":"Bootstrap","level":"info","message":"RabbitMQ bindings successfully declared","service":"task-manager-node","timestamp":"2025-07-18T15:12:08.036Z"}
+{"context":"HealthCheck","level":"info","message":"Verificando servicios externos...","service":"task-manager-node","timestamp":"2025-07-18T15:12:08.036Z"}
+{"context":"HealthCheck","level":"info","message":"Todos los servicios están disponibles","service":"task-manager-node","timestamp":"2025-07-18T15:12:08.042Z"}
+{"level":"info","message":"RabbitMQ confirm channel created for publishing","service":"task-manager-node","timestamp":"2025-07-18T15:12:08.056Z"}
+{"context":"Bootstrap","level":"info","message":"TaskManager-node is running on port 3000","service":"task-manager-node","timestamp":"2025-07-18T15:12:08.058Z"}

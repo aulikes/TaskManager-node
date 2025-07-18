@@ -76,3 +76,13 @@
 {"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.deleted.queue","service":"task-logger-node","timestamp":"2025-07-18T14:04:50.901Z"}
 {"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.updated.queue","service":"task-logger-node","timestamp":"2025-07-18T14:04:50.901Z"}
 {"level":"info","message":"TaskLogger-node is running on port 3100","service":"task-logger-node","timestamp":"2025-07-18T14:04:50.903Z"}
+{"context":"Bootstrap","level":"info","message":"TaskLogger-node is starting...","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.336Z"}
+{"context":"Bootstrap","level":"info","message":"RabbitMQ listener started","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.352Z"}
+{"context":"HealthCheck","level":"info","message":"Verificando servicios externos...","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.352Z"}
+{"context":"HealthCheck","level":"info","message":"Todos los servicios están disponibles","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.356Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.deleted.queue","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.365Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.dlq","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.365Z"}
+{"context":"FailedTaskEventListener","level":"info","message":"Escuchando mensajes en la cola DLQ: task.dlq","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.365Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.created.queue","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.365Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.updated.queue","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.365Z"}
+{"level":"info","message":"TaskLogger-node is running on port 3100","service":"task-logger-node","timestamp":"2025-07-18T15:12:31.367Z"}
