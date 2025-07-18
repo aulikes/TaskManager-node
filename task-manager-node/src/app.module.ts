@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { TaskModule } from './modules/task/task.module';
 import { HealthModule } from './health/health.module';
+import { MetricsModule } from './metrics/metrics.module';
 import { AppLogger } from './logger/app.logger';
 
 @Module({
@@ -14,7 +15,8 @@ import { AppLogger } from './logger/app.logger';
     }),
     TypeOrmModule.forRootAsync(typeOrmConfig),
     TaskModule,
-    HealthModule
+    HealthModule,
+    MetricsModule,
   ],
   providers: [AppLogger],
   exports: [AppLogger],

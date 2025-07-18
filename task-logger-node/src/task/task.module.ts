@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { LoggerModule } from '../logger/logger.module';
+import { MetricsModule } from '../metrics/metrics.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TaskCreatedEvent, TaskCreatedEventSchema } from './schema/task-created-event.schema';
 import { TaskUpdatedEvent, TaskUpdatedEventSchema } from './schema/task-updated-event.schema';
@@ -13,6 +14,7 @@ import { NAME_CONNECTION_LOGGER_EVENTS } from '../config/database.constants';
 @Module({
   imports: [
     LoggerModule,
+    MetricsModule,
 
     // Conexión a MongoDB usando Mongoose
     MongooseModule.forRootAsync({

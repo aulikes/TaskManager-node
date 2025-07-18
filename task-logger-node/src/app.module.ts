@@ -5,6 +5,7 @@ import { HealthModule } from './health/health.module';
 import { RabbitMqModule } from './common/messaging/rabbitmq.module';
 import { FailedEventModule } from './common/failed-event/failed-event.module';
 import { TaskModule } from './task/task.module';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { TaskModule } from './task/task.module';
     RabbitMqModule,
     TaskModule,
     FailedEventModule,
+    MetricsModule,
   ],
   controllers: [],
   providers: [

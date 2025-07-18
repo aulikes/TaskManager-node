@@ -8,7 +8,7 @@ import { TaskDeletedEvent, TaskDeletedEventDocument } from '../schema/task-delet
 import { BadRequestException } from '@nestjs/common';
 import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
 import { RetryPersist } from '../../util/retry-persist.util';
-
+import { MetricsService } from '../../metrics/metrics.service';
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
@@ -22,6 +22,7 @@ export class TaskDeletedService {
     private readonly model: Model<TaskDeletedEventDocument>,
     private readonly logger: AppLogger,
     private readonly configService: ConfigService,
+    private readonly metricsService: MetricsService, // para métricas
   ) {
     this.retryPersist = new RetryPersist(this.configService, this.logger);
   }
@@ -36,6 +37,8 @@ export class TaskDeletedService {
     await this.retryPersist.execute(async () => {
       const doc = new this.model(event);
       await doc.save();
+      // Aumentamos el contador de tareas eliminadas
+      this.metricsService.tasksDeletedCounter.inc();
       this.logger.log(`Evento TaskDeletedEvent persistido (id: ${event.id})`, 'TaskDeletedService');
     });
   }

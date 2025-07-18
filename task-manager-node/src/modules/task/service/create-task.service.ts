@@ -7,7 +7,7 @@ import { PostgresTaskRepository } from '../repository/task.repository';
 import { RabbitTaskCreatedEventPublisher } from '../../../common/messaging/rabbit-task-created-event.publisher';
 import { AppLogger } from '../../../logger/app.logger';
 import { DomainException } from '../../../common/exceptions/domain.exception';
-
+import { MetricsService } from '../../../metrics/metrics.service'; // Importa la métrica
 
 @Injectable()
 export class CreateTaskService {
@@ -15,6 +15,7 @@ export class CreateTaskService {
     private readonly repository: PostgresTaskRepository,
     private readonly eventPublisher: RabbitTaskCreatedEventPublisher,
     private readonly logger: AppLogger,
+    private readonly metricsService: MetricsService, // para métricas
   ) {}
 
   /**
@@ -27,6 +28,10 @@ export class CreateTaskService {
       const existing = await this.repository.findByTitle(dto.title);
       if (existing) {
         this.logger.warn(`Tarea duplicada: ya existe una con título "${dto.title}"`);
+        
+        // Incrementa métrica 
+        this.metricsService.tasksCreatedDuplicatedCounter.inc();
+
         throw new DomainException(
           'A task with this title already exists',
           'TASK_ALREADY_EXISTS',
@@ -53,6 +58,10 @@ export class CreateTaskService {
           saved.createdAt
         )
       );
+
+      // Incrementa métrica 
+      this.metricsService.tasksCreatedCounter.inc();
+
       return saved;
 
     } catch (error) {
@@ -60,6 +69,9 @@ export class CreateTaskService {
         this.logger.warn(`Error de dominio: ${error.message}`);
         throw error;
       }
+
+      // Incrementa métrica 
+      this.metricsService.tasksCreatedErrorCounter.inc();
 
       this.logger.error('Error inesperado al ejecutar CreateTask:', error);
       throw new DomainException(

@@ -8,6 +8,7 @@ import { TaskCreatedEvent, TaskCreatedEventDocument } from '../schema/task-creat
 import { BadRequestException } from '@nestjs/common';
 import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
 import { RetryPersist } from '../../util/retry-persist.util';
+import { MetricsService } from '../../metrics/metrics.service';
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
@@ -21,6 +22,7 @@ export class TaskCreatedService {
     private readonly model: Model<TaskCreatedEventDocument>,
     private readonly logger: AppLogger,
     private readonly configService: ConfigService,
+    private readonly metricsService: MetricsService, // para métricas
   ) {
     this.retryPersist = new RetryPersist(this.configService, this.logger);
   }
@@ -31,6 +33,8 @@ export class TaskCreatedService {
     await this.retryPersist.execute(async () => {
       const doc = new this.model(event);
       await doc.save();
+      // Aumentamos el contador de tareas creadas
+      this.metricsService.tasksCreatedCounter.inc();
       this.logger.log(`Evento TaskCreatedEvent persistido (id: ${event.id})`, 'TaskCreatedService');
     });
   }

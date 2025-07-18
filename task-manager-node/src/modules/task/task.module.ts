@@ -9,12 +9,14 @@ import { TaskEntity } from './model/task.entity';
 import { AppLogger } from '../../logger/app.logger';
 import { RabbitMQModule } from '../../common/messaging/rabbitmq.module';
 import { SchemaModule } from '../../common/failed-event/failed-event.module';
+import { MetricsModule } from '../../metrics/metrics.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TaskEntity]),
     RabbitMQModule, 
     SchemaModule, 
+    MetricsModule,
   ],
   controllers: [TaskController],
   providers: [

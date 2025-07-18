@@ -8,7 +8,7 @@ import { TaskUpdatedEvent, TaskUpdatedEventDocument } from '../schema/task-updat
 import { BadRequestException } from '@nestjs/common';
 import { NAME_CONNECTION_LOGGER_EVENTS } from '../../config/database.constants';
 import { RetryPersist } from '../../util/retry-persist.util';
-
+import { MetricsService } from '../../metrics/metrics.service';
 // Funciones de class-validator y class-transformer
 import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
@@ -22,6 +22,7 @@ export class TaskUpdatedService {
     private readonly model: Model<TaskUpdatedEventDocument>,
     private readonly logger: AppLogger,
     private readonly configService: ConfigService,
+    private readonly metricsService: MetricsService, // para métricas
   ) {
     this.retryPersist = new RetryPersist(this.configService, this.logger);
   }
@@ -36,6 +37,8 @@ export class TaskUpdatedService {
     await this.retryPersist.execute(async () => {
       const doc = new this.model(event);
       await doc.save();
+      // Aumentamos el contador de tareas actualizadas
+      this.metricsService.tasksUpdatedCounter.inc();
       this.logger.log(`TaskUpdatedEvent persisted (id: ${event.after.id})`, 'TaskUpdatedService');
     });
   }

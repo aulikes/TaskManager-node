@@ -20,7 +20,7 @@ export class AppLogger implements LoggerService {
         winston.format.timestamp(),            // Agrega timestamp
         winston.format.json()                  // Salida en formato JSON estructurado
       ),
-      defaultMeta: { service: 'task-logger-node' }, // Cambia este nombre según el microservicio
+      defaultMeta: { service: 'task-logger-node' }, // Cambiar este nombre según el microservicio
       transports: [
         new winston.transports.Console(),
         new winston.transports.File({

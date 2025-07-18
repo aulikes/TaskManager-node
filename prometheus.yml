@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 5s      # Intervalo para recolectar métricas
+  evaluation_interval: 5s  # Intervalo para evaluar reglas internas (si existieran)
+
+scrape_configs:
+  - job_name: 'task-manager-node'
+    static_configs:
+      - targets: ['host.docker.internal:3000']  # Puerto del HOST donde expone métricas el microservicio productor
+
+  - job_name: 'task-logger-node'
+    static_configs:
+      - targets: ['host.docker.internal:3100']  # Puerto del HOST donde expone métricas el microservicio consumidor

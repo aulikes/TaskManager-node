@@ -6,6 +6,7 @@ import { PostgresTaskRepository } from '../repository/task.repository';
 import { RabbitTaskUpdatedEventPublisher } from '../../../common/messaging/rabbit-task-updated-event.publisher';
 import { AppLogger } from '../../../logger/app.logger';
 import { DomainException } from '../../../common/exceptions/domain.exception';
+import { MetricsService } from '../../../metrics/metrics.service'; // Importa la métrica
 
 @Injectable()
 export class UpdateTaskService {
@@ -13,6 +14,7 @@ export class UpdateTaskService {
     private readonly repository: PostgresTaskRepository,
     private readonly eventPublisher: RabbitTaskUpdatedEventPublisher,
     private readonly logger: AppLogger,
+    private readonly metricsService: MetricsService, // para métricas
   ) {}
 
   async execute(id: number, dto: UpdateTaskDto): Promise<TaskEntity> {
@@ -20,6 +22,8 @@ export class UpdateTaskService {
       // Buscar la tarea por ID
       const existingTask = await this.repository.findById(id);
       if (!existingTask) {
+        // Incrementa métrica 
+        this.metricsService.tasksNotFoundCounter.inc();
         // Lanzar excepción si no existe
         throw new NotFoundException(`Task with ID ${id} not found`);
       }
@@ -53,6 +57,9 @@ export class UpdateTaskService {
       );
       await this.eventPublisher.publish(event);
 
+      // Incrementa métrica 
+      this.metricsService.tasksUpdatedCounter.inc();
+
       this.logger.log('Task publicada exitosamente.');
       return after;
     } catch (error) {
@@ -61,6 +68,9 @@ export class UpdateTaskService {
         this.logger.warn(`Excepción conocida: ${error.message}`);
         throw error;
       }
+
+      // Incrementa métrica 
+      this.metricsService.tasksUpdatedErrorCounter.inc();
 
       // Para cualquier otra excepción inesperada, loguea como error crítico
       this.logger.error('Error inesperado al ejecutar UpdateTask', error);
