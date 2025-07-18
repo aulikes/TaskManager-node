@@ -1,0 +1,41 @@
+# ---------------------------------------
+# Configuración de entradas (inputs)
+# ---------------------------------------
+filebeat.inputs:
+  - type: log               # Tipo de entrada: archivos de log
+    enabled: true           # Habilita esta entrada
+    paths:
+      - /app/task-manager-logs/*.log     # Ruta donde Filebeat buscará logs. Esta ruta está montada desde el contenedor (Winston escribe aquí). 
+                                         # Logs del microservicio task-manager-node
+      - /app/task-logger-logs/*.log      # Ruta donde Filebeat buscará logs. Esta ruta está montada desde el contenedor (Winston escribe aquí). 
+                                         # Logs del microservicio task-logger-node
+
+    # ----------------------------------------------------------
+    # Configuración para interpretar logs en formato JSON
+    # ----------------------------------------------------------
+    json:
+      keys_under_root: true         # Coloca los campos del JSON directamente como campos de nivel raíz (sin anidarlos en "json")
+      add_error_key: true           # Si hay un error al parsear el JSON, agrega un campo "error.message" en el evento
+      message_key: message          # El campo que contiene el mensaje del log
+
+      # ----------------------------------------------------------
+      # Configuración para logs que se extienden en varias líneas
+      # (Ej. trazas de errores con múltiples líneas)
+      # ----------------------------------------------------------
+      multiline:
+        pattern: '^\{'              # Considera que un nuevo mensaje empieza si la línea comienza con una llave {
+        negate: true                # Las líneas que NO coincidan con el patrón anterior se consideran continuación del log anterior
+        match: after                # Las líneas adicionales se agregan después de la línea original
+
+# ---------------------------------------
+# Procesadores: enriquecen los logs
+# ---------------------------------------
+processors:
+  - add_host_metadata: ~         # Agrega información del host (nombre, IP, etc.) al evento
+  - add_docker_metadata: ~       # Agrega metadata del contenedor Docker si Filebeat corre dentro de uno
+
+# ---------------------------------------
+# Salida: hacia dónde enviar los logs
+# ---------------------------------------
+output.logstash:
+  hosts: ["logstash:5044"]       # Dirección y puerto del contenedor de Logstash que recibirá los logs

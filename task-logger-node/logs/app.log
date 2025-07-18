@@ -1,0 +1,30 @@
+{"context":"Bootstrap","level":"info","message":"TaskLogger-node is starting...","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.551Z"}
+{"context":"Bootstrap","level":"info","message":"RabbitMQ listener started","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.586Z"}
+{"context":"HealthCheck","level":"info","message":"Verificando servicios externos...","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.586Z"}
+{"context":"HealthCheck","level":"info","message":"Todos los servicios están disponibles","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.590Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.deleted.queue","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.599Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.created.queue","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.599Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.updated.queue","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.599Z"}
+{"context":"RabbitMqListenerService","level":"info","message":"Connected to queue: task.dlq","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.600Z"}
+{"context":"FailedTaskEventListener","level":"info","message":"Escuchando mensajes en la cola DLQ: task.dlq","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.600Z"}
+{"level":"info","message":"TaskLogger-node is running on port 3100","service":"task-logger-node","timestamp":"2025-07-17T15:45:38.602Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Received event: task.created","service":"task-logger-node","timestamp":"2025-07-17T16:20:18.607Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Raw payload: \"{\\\"id\\\":31,\\\"title\\\":\\\"Finish Rabbit setup33\\\",\\\"description\\\":\\\"Ensure the broker and listener are up and connected\\\",\\\"status\\\":\\\"PENDING\\\",\\\"createdAt\\\":\\\"2025-07-17T16:20:18.585Z\\\"}\"","service":"task-logger-node","timestamp":"2025-07-17T16:20:18.607Z"}
+{"level":"info","message":"DTO validated successfully","service":"task-logger-node","timestamp":"2025-07-17T16:20:18.609Z"}
+{"context":"TaskCreatedService","level":"info","message":"Evento TaskCreatedEvent persistido (id: 31)","service":"task-logger-node","timestamp":"2025-07-17T16:20:18.625Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Task event saved to MongoDB","service":"task-logger-node","timestamp":"2025-07-17T16:20:18.625Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Received event: task.created","service":"task-logger-node","timestamp":"2025-07-17T16:31:08.880Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Raw payload: \"{\\\"id\\\":32,\\\"title\\\":\\\"Finish Rabbit setup34\\\",\\\"description\\\":\\\"Ensure the broker and listener are up and connected\\\",\\\"status\\\":\\\"PENDING\\\",\\\"createdAt\\\":\\\"2025-07-17T16:31:08.867Z\\\"}\"","service":"task-logger-node","timestamp":"2025-07-17T16:31:08.880Z"}
+{"level":"info","message":"DTO validated successfully","service":"task-logger-node","timestamp":"2025-07-17T16:31:08.882Z"}
+{"context":"TaskCreatedService","level":"info","message":"Evento TaskCreatedEvent persistido (id: 32)","service":"task-logger-node","timestamp":"2025-07-17T16:31:08.892Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Task event saved to MongoDB","service":"task-logger-node","timestamp":"2025-07-17T16:31:08.892Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Received event: task.created","service":"task-logger-node","timestamp":"2025-07-17T16:58:42.509Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Raw payload: \"{\\\"id\\\":33,\\\"title\\\":\\\"Finish Rabbit setup35\\\",\\\"description\\\":\\\"Ensure the broker and listener are up and connected\\\",\\\"status\\\":\\\"PENDING\\\",\\\"createdAt\\\":\\\"2025-07-17T16:58:42.501Z\\\"}\"","service":"task-logger-node","timestamp":"2025-07-17T16:58:42.509Z"}
+{"level":"info","message":"DTO validated successfully","service":"task-logger-node","timestamp":"2025-07-17T16:58:42.510Z"}
+{"context":"TaskCreatedService","level":"info","message":"Evento TaskCreatedEvent persistido (id: 33)","service":"task-logger-node","timestamp":"2025-07-17T16:58:42.513Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Task event saved to MongoDB","service":"task-logger-node","timestamp":"2025-07-17T16:58:42.513Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Received event: task.created","service":"task-logger-node","timestamp":"2025-07-17T17:01:55.136Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Raw payload: \"{\\\"id\\\":34,\\\"title\\\":\\\"Finish Rabbit setup36\\\",\\\"description\\\":\\\"Ensure the broker and listener are up and connected\\\",\\\"status\\\":\\\"PENDING\\\",\\\"createdAt\\\":\\\"2025-07-17T17:01:55.129Z\\\"}\"","service":"task-logger-node","timestamp":"2025-07-17T17:01:55.136Z"}
+{"level":"info","message":"DTO validated successfully","service":"task-logger-node","timestamp":"2025-07-17T17:01:55.136Z"}
+{"context":"TaskCreatedService","level":"info","message":"Evento TaskCreatedEvent persistido (id: 34)","service":"task-logger-node","timestamp":"2025-07-17T17:01:55.139Z"}
+{"context":"TaskCreatedListener","level":"info","message":"Task event saved to MongoDB","service":"task-logger-node","timestamp":"2025-07-17T17:01:55.139Z"}

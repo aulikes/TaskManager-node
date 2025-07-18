@@ -1,0 +1,34 @@
+{"context":"Bootstrap","level":"info","message":"TaskManager-node is starting...","service":"task-manager-node","timestamp":"2025-07-17T15:41:59.761Z"}
+{"context":"Bootstrap","level":"info","message":"RabbitMQ bindings successfully declared","service":"task-manager-node","timestamp":"2025-07-17T15:41:59.790Z"}
+{"context":"HealthCheck","level":"info","message":"Verificando servicios externos...","service":"task-manager-node","timestamp":"2025-07-17T15:41:59.790Z"}
+{"context":"HealthCheck","level":"info","message":"Todos los servicios están disponibles","service":"task-manager-node","timestamp":"2025-07-17T15:41:59.796Z"}
+{"level":"info","message":"RabbitMQ confirm channel created for publishing","service":"task-manager-node","timestamp":"2025-07-17T15:41:59.809Z"}
+{"context":"Bootstrap","level":"info","message":"TaskManager-node is running on port 3000","service":"task-manager-node","timestamp":"2025-07-17T15:41:59.811Z"}
+{"level":"info","message":"Verificando si ya existe una tarea con el mismo título...","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.564Z"}
+{"level":"info","message":"Creando entidad de Task...","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.585Z"}
+{"level":"info","message":"Persistiendo en base de datos...","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.585Z"}
+{"level":"info","message":"Preparando para publicar evento de la entidad...","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.601Z"}
+{"level":"info","message":"Publishing task.created event: {\"id\":31,\"title\":\"Finish Rabbit setup33\",\"description\":\"Ensure the broker and listener are up and connected\",\"status\":\"PENDING\",\"createdAt\":\"2025-07-17T16:20:18.585Z\"}","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.601Z"}
+{"level":"info","message":"Publishing to task.events with routing key task.created","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.601Z"}
+{"level":"info","message":"Message published successfully","service":"task-manager-node","timestamp":"2025-07-17T16:20:18.605Z"}
+{"level":"info","message":"Verificando si ya existe una tarea con el mismo título...","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.847Z"}
+{"level":"info","message":"Creando entidad de Task...","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.867Z"}
+{"level":"info","message":"Persistiendo en base de datos...","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.867Z"}
+{"level":"info","message":"Preparando para publicar evento de la entidad...","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.871Z"}
+{"level":"info","message":"Publishing task.created event: {\"id\":32,\"title\":\"Finish Rabbit setup34\",\"description\":\"Ensure the broker and listener are up and connected\",\"status\":\"PENDING\",\"createdAt\":\"2025-07-17T16:31:08.867Z\"}","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.872Z"}
+{"level":"info","message":"Publishing to task.events with routing key task.created","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.872Z"}
+{"level":"info","message":"Message published successfully","service":"task-manager-node","timestamp":"2025-07-17T16:31:08.879Z"}
+{"level":"info","message":"Verificando si ya existe una tarea con el mismo título...","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.474Z"}
+{"level":"info","message":"Creando entidad de Task...","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.501Z"}
+{"level":"info","message":"Persistiendo en base de datos...","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.501Z"}
+{"level":"info","message":"Preparando para publicar evento de la entidad...","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.506Z"}
+{"level":"info","message":"Publishing task.created event: {\"id\":33,\"title\":\"Finish Rabbit setup35\",\"description\":\"Ensure the broker and listener are up and connected\",\"status\":\"PENDING\",\"createdAt\":\"2025-07-17T16:58:42.501Z\"}","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.506Z"}
+{"level":"info","message":"Publishing to task.events with routing key task.created","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.507Z"}
+{"level":"info","message":"Message published successfully","service":"task-manager-node","timestamp":"2025-07-17T16:58:42.509Z"}
+{"level":"info","message":"Verificando si ya existe una tarea con el mismo título...","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.112Z"}
+{"level":"info","message":"Creando entidad de Task...","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.129Z"}
+{"level":"info","message":"Persistiendo en base de datos...","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.129Z"}
+{"level":"info","message":"Preparando para publicar evento de la entidad...","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.133Z"}
+{"level":"info","message":"Publishing task.created event: {\"id\":34,\"title\":\"Finish Rabbit setup36\",\"description\":\"Ensure the broker and listener are up and connected\",\"status\":\"PENDING\",\"createdAt\":\"2025-07-17T17:01:55.129Z\"}","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.133Z"}
+{"level":"info","message":"Publishing to task.events with routing key task.created","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.133Z"}
+{"level":"info","message":"Message published successfully","service":"task-manager-node","timestamp":"2025-07-17T17:01:55.135Z"}
