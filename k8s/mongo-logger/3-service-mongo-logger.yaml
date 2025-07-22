@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-logger-service
+  namespace: taskmanager-node-dev
+  labels:
+    app: mongo-logger
+spec:
+  selector:
+    app: mongo-logger
+  ports:
+    - name: mongodb
+      port: 27017                          # Puerto dentro del clúster
+      targetPort: 27017                    # Puerto del contenedor
+      nodePort: 30017                      # Puerto accesible desde el host
+  type: NodePort                           # Permite acceso externo desde el host

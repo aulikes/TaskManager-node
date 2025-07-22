@@ -1,0 +1,14 @@
+# PersistentVolumeClaim para MongoDB (eventos logger)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-logger-pvc                    # PVC que se enlaza al PV
+  namespace: taskmanager-node-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: mongo-logger-pv               # Relación directa con el volumen mongo-logger-pv
+  storageClassName: ""                      # Sin StorageClass para hacer binding manual al volumen definido

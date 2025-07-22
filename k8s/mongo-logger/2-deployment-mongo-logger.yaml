@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-logger-deployment
+  namespace: taskmanager-node-dev
+  labels:
+    app: mongo-logger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-logger
+  template:
+    metadata:
+      labels:
+        app: mongo-logger
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:6
+          ports:
+            - containerPort: 27017         # Puerto por defecto de MongoDB
+          volumeMounts:
+            - name: mongo-logger-storage
+              mountPath: /data/db          # Ruta dentro del contenedor donde se monta el volumen
+      volumes:
+        - name: mongo-logger-storage
+          persistentVolumeClaim:
+            claimName: mongo-logger-pvc    # Enlaza con el PVC

@@ -1,0 +1,15 @@
+# PersistentVolume para MongoDB (eventos fallidos)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-failed-pv
+spec:
+  capacity:
+    storage: 1Gi                        # Espacio disponible para el volumen
+  accessModes:
+    - ReadWriteOnce                    # Solo puede ser montado por un nodo a la vez
+  hostPath:
+    path: /tmp/volumes/mongo-failed       # Ruta en el host (válido para entornos locales como Colima o Minikube)
+                                            # Esta ruta debe existir en el host (o será creada)
+  persistentVolumeReclaimPolicy: Retain     # Al eliminar el PVC, el PV se conserva (no se elimina)
+  storageClassName: ""                      # Vacío para usar binding manual (sin provisión automática)

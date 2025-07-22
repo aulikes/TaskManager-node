@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-logger-pv                     # Nombre único del PV
+spec:
+  capacity:
+    storage: 1Gi                            # Capacidad de almacenamiento
+  accessModes:
+    - ReadWriteOnce                         # Solo un nodo puede montar este volumen
+  hostPath:
+    path: /tmp/volumes/mongo-logger         # Ruta del host donde se almacenarán los datos
+                                            # Esta ruta debe existir en el host (o será creada)
+  persistentVolumeReclaimPolicy: Retain     # Al eliminar el PVC, el PV se conserva (no se elimina)
+  storageClassName: ""                      # Vacío para usar binding manual (sin provisión automática)

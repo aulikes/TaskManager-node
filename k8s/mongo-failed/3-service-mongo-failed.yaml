@@ -1,0 +1,14 @@
+# Service para exponer MongoDB (eventos fallidos) externamente
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-failed-service
+  namespace: taskmanager-node-dev
+spec:
+  selector:
+    app: mongo-failed
+  ports:
+    - port: 27017              # Puerto dentro del clúster
+      targetPort: 27017        # Puerto del contenedor
+      nodePort: 32017          # Puerto externo del host
+  type: NodePort               # Permite acceso desde fuera del clúster

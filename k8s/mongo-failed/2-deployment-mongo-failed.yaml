@@ -1,0 +1,28 @@
+# Deployment de MongoDB (eventos fallidos)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-failed-deployment
+  namespace: taskmanager-node-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-failed
+  template:
+    metadata:
+      labels:
+        app: mongo-failed
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:6
+          ports:
+            - containerPort: 27017       # Puerto expuesto por el contenedor
+          volumeMounts:
+            - name: mongo-failed-storage
+              mountPath: /data/db        # Ruta donde Mongo guarda sus datos
+      volumes:
+        - name: mongo-failed-storage
+          persistentVolumeClaim:
+            claimName: mongo-failed-pvc

@@ -1,0 +1,14 @@
+# PersistentVolumeClaim para MongoDB (eventos fallidos)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-failed-pvc
+  namespace: taskmanager-node-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi                     # Debe coincidir con el PV disponible
+  volumeName: mongo-failed-pv          # Se vincula directamente con el volumen mongo-failed-pv
+  storageClassName: ""                 # Sin StorageClass para hacer binding manual al volumen definido
