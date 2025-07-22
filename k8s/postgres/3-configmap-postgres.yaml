@@ -1,0 +1,8 @@
+# ConfigMap con el nombre de la base de datos
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config                     # Nombre del ConfigMap
+  namespace: taskmanager-node-dev
+data:
+  postgres-db: task_manager_db              # Nombre de la base de datos

@@ -1,0 +1,15 @@
+# Definición de un PersistentVolume estático para PostgreSQL
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv                         # Nombre del volumen persistente
+spec:
+  capacity:
+    storage: 1Gi                            # Cantidad de almacenamiento reservado
+  accessModes:
+    - ReadWriteOnce                         # Solo un nodo puede montar el volumen en modo lectura/escritura
+  hostPath:
+    path: /tmp/volumes/postgres             # Ruta del host donde se almacenarán los datos
+                                            # Esta ruta debe existir en el host (o será creada)
+  persistentVolumeReclaimPolicy: Retain     # Al eliminar el PVC, el PV se conserva (no se elimina)
+  storageClassName: ""                      # Vacío para usar binding manual (sin provisión automática)

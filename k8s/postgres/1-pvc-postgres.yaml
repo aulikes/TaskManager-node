@@ -1,0 +1,14 @@
+# Solicitud de uso de un PersistentVolume específico
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc                        # Nombre del PVC
+  namespace: taskmanager-node-dev           # Namespace donde se aplicará
+spec:
+  accessModes:
+    - ReadWriteOnce                         # Mismo modo que el PV
+  resources:
+    requests:
+      storage: 1Gi                          # Se solicita 1Gi, debe coincidir con el PV disponible
+  volumeName: postgres-pv                   # Se vincula directamente con el volumen postgres-pv
+  storageClassName: ""                      # Sin StorageClass para hacer binding manual al volumen definido
