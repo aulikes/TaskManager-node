@@ -1,0 +1,15 @@
+# Solicita acceso al volumen físico definido en el PV
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-pvc
+  namespace: taskmanager-node-dev    # Namespace donde se desplegará
+  labels:
+    app: rabbitmq
+spec:
+  accessModes:
+    - ReadWriteOnce                  # Acceso exclusivo por un solo nodo
+  resources:
+    requests:
+      storage: 512Mi                 # Solicita 512 MiB de almacenamiento

@@ -1,0 +1,22 @@
+# Servicio para exponer RabbitMQ dentro del clúster (puede cambiarse a NodePort si se desea acceso externo)
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service                # Nombre del Service
+  namespace: taskmanager-node-dev       # Namespace donde se crea
+  labels:
+    app: rabbitmq
+spec:
+  selector:
+    app: rabbitmq                      # Se vincula al Deployment con la etiqueta que está en template.metadata.labels
+  ports:
+    - name: amqp
+      port: 5672                                    # Puerto AMQP para aplicaciones (interno en el cluster)
+      targetPort: 5672                              # Puerto del contenedor
+    - name: management
+      port: 15672                                   # Puerto de la interfaz web de administración
+      targetPort: 15672                             # Puerto del contenedor donde corre la UI
+      nodePort: 31572                               # Puerto del host para acceder desde fuera del cluster
+  # type: ClusterIP  # Cambiar a NodePort si se desea acceder desde fuera del clúster
+  type: NodePort  # Permite acceso desde la máquina host

@@ -1,0 +1,11 @@
+# ConfigMap para definir la configuración de RabbitMQ
+# Este archivo define las variables de entorno que se usarán en el Deployment
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-config                 # Nombre del ConfigMap
+  namespace: taskmanager-node-dev       # Namespace de uso
+data:
+  RABBITMQ_DEFAULT_VHOST: "/"           # Vhost por defecto
+  RABBITMQ_ERLANG_COOKIE: "rabbitcookie" # Clave interna de nodos RabbitMQ (solo si haces clustering)
+

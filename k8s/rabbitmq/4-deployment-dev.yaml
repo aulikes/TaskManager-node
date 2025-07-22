@@ -1,0 +1,48 @@
+# Despliegue del contenedor de RabbitMQ como un Pod administrado por un Deployment
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment             # Nombre del Deployment
+  namespace: taskmanager-node-dev       # Namespace donde se desplegará
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1                           # Solo una instancia para este entorno
+  selector:
+    matchLabels:
+      app: rabbitmq                     # Selector que conecta con el pod
+  template:
+    metadata:
+      labels:
+        app: rabbitmq                   # Etiqueta del pod
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management # Imagen con UI web incluida
+          ports:
+            - containerPort: 5672      # Puerto para comunicación de apps (AMQP)
+            - containerPort: 15672     # Puerto para la interfaz web
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-username
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-secret
+                  key: rabbitmq-password
+            - name: RABBITMQ_DEFAULT_VHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-config
+                  key: RABBITMQ_DEFAULT_VHOST
+          volumeMounts:
+            - name: rabbitmq-storage
+              mountPath: /var/lib/rabbitmq         # Ruta donde RabbitMQ guarda datos
+      volumes:
+        - name: rabbitmq-storage
+          persistentVolumeClaim:
+            claimName: rabbitmq-pvc                # Asociado al PVC creado
