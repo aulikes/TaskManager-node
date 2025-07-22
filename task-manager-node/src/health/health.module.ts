@@ -7,7 +7,6 @@ import { HealthController } from './health.controller';
 import { TypeOrmHealthIndicator } from '@nestjs/terminus';
 import { MongoHealthIndicator } from './mongo.health';
 import { RabbitMQHealthIndicator } from '../health/rabbitmq.health';
-import { RedisHealthIndicator } from '../health/redis.health';
 import { HealthService } from './health.service';
 
 @Module({
@@ -22,7 +21,6 @@ import { HealthService } from './health.service';
     TypeOrmHealthIndicator, 
     MongoHealthIndicator,
     RabbitMQHealthIndicator, 
-    RedisHealthIndicator,
     AppLogger,
   ]  
 })

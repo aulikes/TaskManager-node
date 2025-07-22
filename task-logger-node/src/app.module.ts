@@ -9,7 +9,10 @@ import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,          // Hace que esté disponible en toda la app
+      envFilePath: '.env',     // Ruta del archivo de propiedades
+    }),
     HealthModule,
     RabbitMqModule,
     TaskModule,
@@ -17,10 +20,7 @@ import { MetricsModule } from './metrics/metrics.module';
     MetricsModule,
   ],
   controllers: [],
-  providers: [
-    AppLogger, 
-  ],
-  exports: [
-  ]
+  providers: [AppLogger],
+  exports: [AppLogger]
 })
 export class AppModule {}

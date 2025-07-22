@@ -226,9 +226,6 @@ POSTGRES_DB=task_manager_db
 # MongoDB (DLQ manual)
 MONGO_URI=mongodb://localhost:27017/task_failed_event_db
 
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
 ```
 
 ---

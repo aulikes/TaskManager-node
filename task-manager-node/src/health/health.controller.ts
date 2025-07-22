@@ -2,8 +2,6 @@ import { Controller, Get } from '@nestjs/common';
 // import { HealthCheckService, TypeOrmHealthIndicator, HealthCheck } from '@nestjs/terminus';
 import { HealthCheck, HealthCheckResult } from '@nestjs/terminus';
 import { HealthService } from './health.service';
-import { RabbitMQHealthIndicator } from '../health/rabbitmq.health';
-import { RedisHealthIndicator } from '../health/redis.health';
 
 /**
  * Controlador para exponer el endpoint de verificación de salud (/health).

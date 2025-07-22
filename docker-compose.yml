@@ -52,103 +52,131 @@ services:
     volumes:
       - mongo_logger_data:/data/db
 
-  # ---------------------------------------------------
-  # Redis (almacenamiento en memoria - usado como cache o cola ligera)
-  # ---------------------------------------------------
-  redis:
-    image: redis:7
-    container_name: redis-task
+  task-manager:
+    build:
+      context: ./task-manager-node  # Ruta donde está el Dockerfile
+    container_name: task-manager
     ports:
-      - "6379:6379"
-
-  # ---------------------------------------------------
-  # Elasticsearch (almacenamiento de logs)
-  # ---------------------------------------------------
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.12.1
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ports:
-      - "9200:9200"
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
-
-  # ---------------------------------------------------
-  # Kibana (interfaz de visualización de logs)
-  # ---------------------------------------------------
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.12.1
-    container_name: kibana
-    depends_on:
-      - elasticsearch
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"  # http://localhost:5601
-
-  # ---------------------------------------------------
-  # Logstash (procesamiento y parseo de logs)
-  # ---------------------------------------------------
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.12.1
-    container_name: logstash
-    depends_on:
-      - elasticsearch
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    ports:
-      - "5044:5044"  # Puerto que escucha Filebeat
-
-  # ---------------------------------------------------
-  # Filebeat (lector de logs locales)
-  # ---------------------------------------------------
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:8.12.1
-    container_name: filebeat
-    user: root
-    volumes:
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./logs:/app/logs:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./task-manager-node/logs:/app/task-manager-logs:ro
-      - ./task-logger-node/logs:/app/task-logger-logs:ro
-    depends_on:
-      - logstash
-    command: ["--strict.perms=false"]
-
-  # ---------------------------------------------------
-  # Prometheus (recolección de métricas)
-  # ---------------------------------------------------
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
-    ports:
-      - "9090:9090"  # Interfaz web http://localhost:9090
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Archivo de configuración Prometheus
+      - "3000:3000"                   # Mapeo del puerto externo:interno (el app usa PORT=3000)
+    env_file:
+      - ./task-manager-node/.env      # Monta el archivo .env sin copiarlo al contenedor
+    environment:                      # Sobrescriben las variables del .env al correr por Docker
+      POSTGRES_HOST: postgres
+      RABBITMQ_HOST: rabbitmq
+      FAILED_EVENT_MONGO_URI: mongodb://mongodb-failed:27017/task_failed_event_db
     depends_on:
       - rabbitmq
       - postgres
-      - mongodb-failed
       - mongodb-logger
-      - redis
+      - mongodb-failed
 
-  # ---------------------------------------------------
-  # Grafana (visualización de métricas Prometheus)
-  # ---------------------------------------------------
-  grafana:
-    image: grafana/grafana:latest
-    container_name: grafana
+  task-logger:
+    build:
+      context: ./task-logger-node  # Ruta donde está el Dockerfile
+    container_name: task-logger
     ports:
-      - "4000:3000"  # Interfaz web http://localhost:4000
-    volumes:
-      - grafana_data:/var/lib/grafana
+      - "3100:3100"                   # Mapeo del puerto externo:interno (el app usa PORT=3100)
+    env_file:
+      - ./task-logger-node/.env      # Monta el archivo .env sin copiarlo al contenedor
+    environment:                      # Sobrescriben las variables del .env al correr por Docker
+      POSTGRES_HOST: postgres
+      RABBITMQ_HOST: rabbitmq
+      MONGODB_URI: mongodb://mongodb-logger:27017/task_logger_db 
+      FAILED_EVENT_MONGO_URI: mongodb://mongodb-failed:27017/task_failed_event_db
     depends_on:
-      - prometheus
+      - rabbitmq
+      - postgres
+      - mongodb-logger
+      - mongodb-failed
+
+  # # ---------------------------------------------------
+  # # Elasticsearch (almacenamiento de logs)
+  # # ---------------------------------------------------
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.12.1
+  #   container_name: elasticsearch
+  #   environment:
+  #     - discovery.type=single-node
+  #     - xpack.security.enabled=false
+  #     - ES_JAVA_OPTS=-Xms512m -Xmx512m
+  #   ports:
+  #     - "9200:9200"
+  #   volumes:
+  #     - es_data:/usr/share/elasticsearch/data
+
+  # # ---------------------------------------------------
+  # # Kibana (interfaz de visualización de logs)
+  # # ---------------------------------------------------
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.12.1
+  #   container_name: kibana
+  #   depends_on:
+  #     - elasticsearch
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #   ports:
+  #     - "5601:5601"  # http://localhost:5601
+
+  # # ---------------------------------------------------
+  # # Logstash (procesamiento y parseo de logs)
+  # # ---------------------------------------------------
+  # logstash:
+  #   image: docker.elastic.co/logstash/logstash:8.12.1
+  #   container_name: logstash
+  #   depends_on:
+  #     - elasticsearch
+  #   volumes:
+  #     - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+  #   ports:
+  #     - "5044:5044"  # Puerto que escucha Filebeat
+
+  # # ---------------------------------------------------
+  # # Filebeat (lector de logs locales)
+  # # ---------------------------------------------------
+  # filebeat:
+  #   image: docker.elastic.co/beats/filebeat:8.12.1
+  #   container_name: filebeat
+  #   user: root
+  #   volumes:
+  #     - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+  #     - ./logs:/app/logs:ro
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - ./task-manager-node/logs:/app/task-manager-logs:ro
+  #     - ./task-logger-node/logs:/app/task-logger-logs:ro
+  #   depends_on:
+  #     - logstash
+  #   command: ["--strict.perms=false"]
+
+  # # ---------------------------------------------------
+  # # Prometheus (recolección de métricas)
+  # # ---------------------------------------------------
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: prometheus
+  #   ports:
+  #     - "9090:9090"  # Interfaz web http://localhost:9090
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml  # Archivo de configuración Prometheus
+  #   depends_on:
+  #     - rabbitmq
+  #     - postgres
+  #     - mongodb-failed
+  #     - mongodb-logger
+  #     - redis
+
+  # # ---------------------------------------------------
+  # # Grafana (visualización de métricas Prometheus)
+  # # ---------------------------------------------------
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - "4000:3000"  # Interfaz web http://localhost:4000
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   depends_on:
+  #     - prometheus
 
 # ---------------------------------------------------
 # Volúmenes persistentes
@@ -157,5 +185,5 @@ volumes:
   postgres_data:
   mongo_failed_data:
   mongo_logger_data:
-  es_data:
-  grafana_data:
+  # es_data:
+  # grafana_data:
