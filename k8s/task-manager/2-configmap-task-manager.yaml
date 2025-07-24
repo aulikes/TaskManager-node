@@ -1,0 +1,18 @@
+# k8s/configmaps/task-manager-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-manager-configmap
+  namespace: taskmanager-node-dev
+data:
+  PORT: "3000"
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: task_manager_db
+  RABBITMQ_HOST: rabbitmq-service
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_QUEUE_NAME: task_created_queue
+  LOGGER_MONGO_URI: mongodb://mongo-logger-service:27017
+  LOGGER_MONGO_DB: task_logger_db
+  DLQ_MONGO_URI: mongodb://mongo-failed-service:27017
+  DLQ_MONGO_DB: task_failed_event_db
