@@ -1,6 +1,6 @@
 # 🧩 Task Messaging System
 
-Este sistema está compuesto por dos microservicios independientes que se comunican mediante eventos asincrónicos publicados en RabbitMQ. Su objetivo principal es demostrar una arquitectura desacoplada, resiliente y observable, centrada en el manejo de tareas (Tasks).
+Este sistema está compuesto por dos microservicios independientes en Node.js, lo cuales se comunican mediante eventos asincrónicos publicados en RabbitMQ. Su objetivo principal es demostrar una arquitectura desacoplada, resiliente y observable, centrada en el manejo de tareas (Tasks).
 
 
 ---
